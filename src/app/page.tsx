@@ -16,13 +16,10 @@ export default function Home() {
             className="h-7 w-auto"
           />
         </a>
-        <nav className="flex items-center gap-6">
-          <a
-            href="/"
-            className="text-xs font-semibold uppercase tracking-wider text-navy opacity-100"
-          >
-            Home
-          </a>
+        <nav className="flex items-center gap-4 md:gap-6">
+          <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</a>
+          <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
+          <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
         </nav>
       </header>
 
@@ -97,10 +94,12 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="flex items-center justify-between border-t border-navy/[0.06] px-6 py-6 md:px-16">
-        <p className="text-xs text-navy/50">
-          AI가 만든 마크다운을 사람이 읽기 편한 형태로
-        </p>
+      <footer className="flex flex-col items-center gap-4 border-t border-navy/[0.06] px-6 py-6 md:flex-row md:justify-between md:px-16">
+        <div className="flex gap-5">
+          <a href="/about" className="text-[11px] font-semibold text-navy/35 hover:text-navy">About</a>
+          <a href="/privacy" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Privacy</a>
+          <a href="/contact" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Contact</a>
+        </div>
         <span className="text-[10px] uppercase tracking-[3px] text-navy/50">
           Markview — Markdown + View
         </span>
