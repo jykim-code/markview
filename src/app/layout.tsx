@@ -36,6 +36,11 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/styles/github.min.css"
           crossOrigin="anonymous"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8302055447823333"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="font-montserrat antialiased">{children}</body>
     </html>
