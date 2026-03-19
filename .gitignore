@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dev
+.local-db.json
+.omc/
+
+# test files
+test.md
+test-toc.md

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" fill="none">
+  <defs>
+    <linearGradient id="textFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0F1A3A"/>
+      <stop offset="100%" stop-color="#0A122A"/>
+    </linearGradient>
+    <linearGradient id="sparkle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C9A94E"/>
+      <stop offset="100%" stop-color="#A8892F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Markview text -->
+  <text
+    x="20" y="130"
+    font-family="'Montserrat', system-ui, sans-serif"
+    font-size="128"
+    font-weight="800"
+    fill="url(#textFill)"
+    stroke="#B8961F"
+    stroke-width="2"
+    letter-spacing="-3"
+  >Markview</text>
+
+  <!-- Sparkle stars -->
+  <path d="M558 42 L564 58 L580 64 L564 70 L558 86 L552 70 L536 64 L552 58 Z"
+    fill="url(#sparkle)" stroke="#8B7322" stroke-width="1.5"/>
+  <path d="M596 18 L600 28 L610 32 L600 36 L596 46 L592 36 L582 32 L592 28 Z"
+    fill="url(#sparkle)" stroke="#8B7322" stroke-width="1.2"/>
+  <path d="M608 56 L611 63 L618 66 L611 69 L608 76 L605 69 L598 66 L605 63 Z"
+    fill="url(#sparkle)" stroke="#8B7322" stroke-width="1"/>
+</svg>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markview Design Preview v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FFF7E6;
+    --navy: #0A122A;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fff;
+    color: var(--navy);
+  }
+
+  /* ===== HEADER BAR (ideadoit style) ===== */
+  .header-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 66px;
+    padding: 0 32px;
+    background: #fff;
+    border-bottom: 1px solid var(--navy);
+  }
+
+  .header-bar .logo { height: 28px; }
+
+  .header-bar nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .header-bar nav a {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+
+  .header-bar nav a:hover,
+  .header-bar nav a.active { opacity: 1; }
+
+  /* ===== PAGE 1: HOME (ideadoit style) ===== */
+  .home-hero {
+    min-height: calc(100vh - 66px);
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 60px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero .hero-left {
+    flex: 1;
+    max-width: 480px;
+  }
+
+  .home-hero .big-text {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+  }
+
+  .home-hero .sub-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(10,18,42,0.5);
+    line-height: 1.8;
+    margin-top: 24px;
+  }
+
+  .home-hero .hero-right {
+    flex: 1;
+    max-width: 440px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .home-hero .upload-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(10,18,42,0.08), 0 4px 16px rgba(10,18,42,0.04);
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .home-hero .upload-card .btn-upload {
+    background: var(--navy);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 48px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .home-hero .upload-card .btn-upload:hover { opacity: 0.85; }
+
+  .home-hero .upload-card .upload-hint {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(10,18,42,0.5);
+  }
+
+  .home-hero .upload-card .upload-sub {
+    font-size: 12px;
+    color: rgba(10,18,42,0.35);
+  }
+
+  .home-hero .bg-mark {
+    position: absolute;
+    right: -60px;
+    bottom: -60px;
+    width: 500px;
+    opacity: 0.03;
+  }
+
+  /* WHAT WE DO section */
+  .what-section {
+    padding: 80px 64px;
+    border-bottom: 1px solid rgba(10,18,42,0.06);
+  }
+
+  .what-section .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 40px;
+    opacity: 0.4;
+  }
+
+  .what-section .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 48px;
+  }
+
+  .what-section .tag-list span {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    padding: 8px 20px;
+    border: 1px solid rgba(10,18,42,0.15);
+    border-radius: 100px;
+  }
+
+  .what-section .desc {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(10,18,42,0.5);
+    max-width: 600px;
+  }
+
+  /* Upload section */
+  .upload-section {
+    padding: 80px 64px;
+    background: var(--cream);
+  }
+
+  .upload-section .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 40px;
+    opacity: 0.4;
+  }
+
+  .upload-inner {
+    max-width: 560px;
+  }
+
+  .upload-inner h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .upload-inner .upload-desc {
+    font-size: 15px;
+    color: rgba(10,18,42,0.5);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .drop-zone {
+    border: 2px dashed rgba(10,18,42,0.12);
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    transition: all 0.2s;
+    background: #fff;
+  }
+
+  .drop-zone:hover { border-color: rgba(10,18,42,0.5); }
+
+  .drop-zone p { font-size: 14px; color: rgba(10,18,42,0.5); margin-bottom: 16px; }
+
+  .btn-upload {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 40px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-upload:hover { opacity: 0.85; }
+
+  .drop-zone .hint { font-size: 11px; color: rgba(10,18,42,0.5); margin-top: 12px; margin-bottom: 0; }
+
+  /* Footer */
+  .home-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 64px;
+    border-top: 1px solid rgba(10,18,42,0.06);
+  }
+
+  .home-footer p { font-size: 12px; color: rgba(10,18,42,0.5); }
+  .home-footer .brand { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(10,18,42,0.5); }
+
+  /* ===== PAGE 2: VIEW ===== */
+  .view { min-height: 100vh; display: flex; flex-direction: column; border-bottom: 1px solid #eee; }
+
+  .view-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 66px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--navy);
+  }
+
+  .view-logo { height: 28px; }
+
+  .btn-share {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--navy);
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-share:hover { opacity: 0.85; }
+
+  .view-title { max-width: 900px; margin: 0 auto; padding: 48px 48px 16px; }
+  .view-title h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.3; }
+
+  .view-body { max-width: 900px; margin: 0 auto; display: flex; gap: 48px; padding: 32px 48px 64px; }
+
+  .article-card {
+    flex: 1;
+    background: var(--cream);
+    border-radius: 24px;
+    padding: 48px;
+    min-width: 0;
+  }
+
+  .article-card h2 { font-size: 22px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(10,18,42,0.08); }
+  .article-card h2:first-child { margin-top: 0; }
+  .article-card p { font-size: 15px; line-height: 1.8; color: rgba(10,18,42,0.7); margin: 12px 0; }
+
+  .article-card pre {
+    background: rgba(10,18,42,0.04);
+    border: 1px solid rgba(10,18,42,0.06);
+    border-radius: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    font-family: 'Fira Code', monospace;
+    margin: 16px 0;
+  }
+
+  .article-card code { background: rgba(10,18,42,0.05); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .article-card table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .article-card th { background: rgba(10,18,42,0.04); border: 1px solid rgba(10,18,42,0.08); padding: 8px 12px; text-align: left; font-size: 13px; font-weight: 600; }
+  .article-card td { border: 1px solid rgba(10,18,42,0.08); padding: 8px 12px; font-size: 14px; }
+
+  .toc { width: 180px; flex-shrink: 0; position: sticky; top: 100px; align-self: flex-start; }
+  .toc h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(10,18,42,0.5); margin-bottom: 12px; }
+  .toc ul { list-style: none; border-left: 1px solid rgba(10,18,42,0.08); }
+  .toc li a { display: block; font-size: 13px; color: rgba(10,18,42,0.6); padding: 6px 0 6px 16px; border-left: 2px solid transparent; text-decoration: none; transition: all 0.15s; }
+  .toc li a:hover { color: var(--navy); border-left-color: var(--navy); }
+
+  .view-footer { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 24px 48px; border-top: 1px solid rgba(10,18,42,0.04); width: 100%; }
+  .view-footer img { height: 18px; opacity: 0.15; }
+  .view-footer span { font-size: 10px; letter-spacing: 3px; color: rgba(10,18,42,0.15); }
+
+  /* ===== PAGE 2B: SPLIT EDITOR ===== */
+  .split-view { min-height: 100vh; display: flex; flex-direction: column; border-bottom: 1px solid #eee; }
+
+  .split-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 66px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--navy);
+  }
+
+  .split-header .header-left { display: flex; align-items: center; gap: 16px; }
+  .split-header .header-left img { height: 28px; }
+
+  .split-header .mode-toggle {
+    display: flex;
+    background: rgba(10,18,42,0.06);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .split-header .mode-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: rgba(10,18,42,0.5);
+    transition: all 0.15s;
+  }
+
+  .split-header .mode-btn.active {
+    background: #fff;
+    color: var(--navy);
+    box-shadow: 0 1px 3px rgba(10,18,42,0.1);
+  }
+
+  .split-header .header-actions { display: flex; align-items: center; gap: 8px; }
+
+  .btn-save {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    background: var(--navy);
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-save:hover { opacity: 0.85; }
+
+  .btn-export-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-export {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1px solid rgba(10,18,42,0.15);
+    border-radius: 100px;
+    cursor: pointer;
+    background: #fff;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+
+  .btn-export:hover { border-color: rgba(10,18,42,0.3); }
+
+  .export-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid rgba(10,18,42,0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(10,18,42,0.1);
+    padding: 6px;
+    min-width: 180px;
+    z-index: 20;
+  }
+
+  .export-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.1s;
+  }
+
+  .export-menu a:hover { background: rgba(10,18,42,0.04); }
+  .export-menu .ext { font-size: 11px; color: rgba(10,18,42,0.5); margin-left: auto; }
+
+  .split-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  .split-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(10,18,42,0.08);
+  }
+
+  .split-editor .editor-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(10,18,42,0.5);
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(10,18,42,0.06);
+    background: rgba(10,18,42,0.02);
+  }
+
+  .split-editor textarea {
+    flex: 1;
+    padding: 20px;
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--navy);
+    border: none;
+    resize: none;
+    outline: none;
+    background: #fff;
+  }
+
+  .split-preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .split-preview .preview-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(10,18,42,0.5);
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(10,18,42,0.06);
+    background: rgba(10,18,42,0.02);
+  }
+
+  .split-preview .preview-content {
+    flex: 1;
+    padding: 32px;
+    background: var(--cream);
+  }
+
+  .split-preview .preview-content h2 { font-size: 22px; font-weight: 700; margin-top: 24px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(10,18,42,0.08); }
+  .split-preview .preview-content h2:first-child { margin-top: 0; }
+  .split-preview .preview-content p { font-size: 15px; line-height: 1.8; color: rgba(10,18,42,0.7); margin: 10px 0; }
+  .split-preview .preview-content code { background: rgba(10,18,42,0.05); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .split-preview .preview-content pre { background: rgba(10,18,42,0.04); border-radius: 12px; padding: 16px; font-size: 13px; font-family: 'Fira Code', monospace; margin: 12px 0; overflow-x: auto; }
+
+  /* ===== PAGE 3: 404 ===== */
+  .not-found { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .not-found .logo-faded { height: 40px; opacity: 0.2; margin-bottom: 48px; }
+  .not-found h1 { font-size: 80px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
+  .not-found p { font-size: 18px; color: rgba(10,18,42,0.5); margin-bottom: 40px; }
+
+  /* Section label */
+  .section-label {
+    text-align: center;
+    padding: 16px;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HOME ===================== -->
+<div class="section-label">Page 1 — Home</div>
+
+<!-- Header -->
+<div class="header-bar">
+  <img src="/markview_text_icon.png" alt="Markview" class="logo">
+  <nav>
+    <a href="#" class="active">HOME</a>
+  </nav>
+</div>
+
+<!-- Hero (ideadoit style: dark bg, big text, left-aligned) -->
+<div class="home-hero">
+  <!-- Left: text -->
+  <div class="hero-left">
+    <div class="big-text">
+      마크다운을<br>
+      사람이 읽기 편한<br>
+      형태로.
+    </div>
+    <div class="sub-text">
+      AI가 만든 마크다운 파일을 업로드하면,<br>
+      누구나 읽기 좋은 웹 문서로 변환하고<br>
+      링크 하나로 바로 공유할 수 있습니다.
+    </div>
+  </div>
+
+  <!-- Right: upload card (remove.bg style) -->
+  <div class="hero-right">
+    <div class="upload-card">
+      <button class="btn-upload">.md 파일 업로드</button>
+      <p class="upload-hint">또는 파일 놓기</p>
+      <p class="upload-sub">.md · 최대 512KB</p>
+    </div>
+  </div>
+</div>
+
+<!-- What We Do (ideadoit style) -->
+<div class="what-section">
+  <div class="section-title">What We Support</div>
+  <div class="tag-list">
+    <span>GFM</span>
+    <span>Syntax Highlighting</span>
+    <span>Table of Contents</span>
+    <span>LaTeX Math</span>
+    <span>Mermaid Diagrams</span>
+    <span>Checklist</span>
+    <span>Image</span>
+    <span>Blockquote</span>
+  </div>
+  <div class="desc">
+    마크다운의 모든 문법을 아름답게 렌더링합니다.<br>
+    코드 블록, 수식, 다이어그램까지 — 어떤 마크다운이든 사람이 읽기 편한 문서로 변환합니다.
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="home-footer">
+  <p>AI가 만든 마크다운을 사람이 읽기 좋은 형태로</p>
+  <span class="brand">Markview — Markdown + View</span>
+</div>
+
+<!-- ===================== VIEW ===================== -->
+<div class="section-label">Page 2 — View (문서 렌더링)</div>
+
+<div class="view">
+  <div class="view-header">
+    <img src="/markview_text_icon.png" alt="Markview" class="view-logo">
+    <button class="btn-share">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+      </svg>
+      공유하기
+    </button>
+  </div>
+
+  <div class="view-title">
+    <h1>TOC Test Document</h1>
+  </div>
+
+  <div class="view-body">
+    <div class="article-card">
+      <h2>Introduction</h2>
+      <p>This is the introduction section with some content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+      <h2>Features</h2>
+      <p>Markview supports extended markdown rendering including code highlighting, math, and diagrams.</p>
+      <pre><code>function hello() {
+  console.log("Hello Markview!");
+}</code></pre>
+
+      <p>Inline math like <code>E = mc²</code> and tables are supported:</p>
+      <table>
+        <thead><tr><th>Feature</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>GFM</td><td>Supported</td></tr>
+          <tr><td>Code Highlight</td><td>Supported</td></tr>
+          <tr><td>LaTeX</td><td>Supported</td></tr>
+          <tr><td>Mermaid</td><td>Supported</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Getting Started</h2>
+      <p>1. Upload a markdown file<br>2. Get a shareable URL<br>3. Share with anyone</p>
+
+      <h2>Conclusion</h2>
+      <p>Thank you for using Markview!</p>
+    </div>
+
+    <div class="toc">
+      <h3>목차</h3>
+      <ul>
+        <li><a href="#">Introduction</a></li>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Getting Started</a></li>
+        <li><a href="#">Conclusion</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="view-footer">
+    <img src="/markview_icon.png" alt="">
+    <span>MARKVIEW</span>
+  </div>
+</div>
+
+<!-- ===================== SPLIT EDITOR ===================== -->
+<div class="section-label">Page 2B — Split Editor (업로드 후 편집 모드)</div>
+
+<div class="split-view" style="height: 700px;">
+  <!-- Header with mode toggle + actions -->
+  <div class="split-header">
+    <div class="header-left">
+      <img src="/markview_text_icon.png" alt="Markview">
+      <div class="mode-toggle">
+        <button class="mode-btn">Preview</button>
+        <button class="mode-btn active">Split</button>
+        <button class="mode-btn">Editor</button>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- 1. 저장 -->
+      <button class="btn-save">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 3v5h8V3M7 21v-7h10v7"/>
+        </svg>
+        .md 저장
+      </button>
+      <!-- 2. Export -->
+      <div class="btn-export-dropdown">
+        <button class="btn-save" style="background: #fff; color: var(--navy); border: 1px solid rgba(10,18,42,0.15);">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Export
+        </button>
+        <div class="export-menu">
+          <a href="#">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+            Markdown <span class="ext">.md</span>
+          </a>
+          <a href="#">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+            HTML <span class="ext">.html</span>
+          </a>
+          <a href="#">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+            PDF <span class="ext">.pdf</span>
+          </a>
+        </div>
+      </div>
+      <!-- 3. 공유 -->
+      <button class="btn-save" style="background: #fff; color: var(--navy); border: 1px solid rgba(10,18,42,0.15);">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        공유
+      </button>
+    </div>
+  </div>
+
+  <!-- Split body -->
+  <div class="split-body">
+    <!-- Left: Editor -->
+    <div class="split-editor">
+      <div class="editor-label">Markdown</div>
+      <textarea># TOC Test Document
+
+## Introduction
+This is the introduction section with some content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+## Features
+Markview supports extended markdown rendering including code highlighting, math, and diagrams.
+
+```javascript
+function hello() {
+  console.log("Hello Markview!");
+}
+```
+
+## Getting Started
+1. Upload a markdown file
+2. Get a shareable URL
+3. Share with anyone
+
+## Conclusion
+Thank you for using Markview!</textarea>
+    </div>
+
+    <!-- Right: Preview -->
+    <div class="split-preview">
+      <div class="preview-label">Preview</div>
+      <div class="preview-content">
+        <h2>Introduction</h2>
+        <p>This is the introduction section with some content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+        <h2>Features</h2>
+        <p>Markview supports extended markdown rendering including code highlighting, math, and diagrams.</p>
+        <pre><code>function hello() {
+  console.log("Hello Markview!");
+}</code></pre>
+
+        <h2>Getting Started</h2>
+        <p>1. Upload a markdown file<br>2. Get a shareable URL<br>3. Share with anyone</p>
+
+        <h2>Conclusion</h2>
+        <p>Thank you for using Markview!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 404 ===================== -->
+<div class="section-label">Page 3 — 404</div>
+
+<div class="not-found">
+  <img src="/markview_text_icon.png" alt="Markview" class="logo-faded">
+  <h1>404</h1>
+  <p>문서를 찾을 수 없습니다.</p>
+  <button class="btn-upload">메인으로 돌아가기</button>
+</div>
+
+</body>
+</html>

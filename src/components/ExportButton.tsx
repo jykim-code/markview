@@ -1,0 +1,126 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+
+interface ExportButtonProps {
+  content: string;
+  title: string;
+}
+
+export function ExportButton({ content, title }: ExportButtonProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function downloadFile(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setOpen(false);
+  }
+
+  function exportMarkdown() {
+    const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+    downloadFile(blob, `${title}.md`);
+  }
+
+  function exportHTML() {
+    const previewEl = document.querySelector(".prose");
+    const htmlContent = previewEl?.innerHTML || content;
+    const fullHTML = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/styles/github.min.css">
+<style>
+body { font-family: 'Montserrat', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; color: #0A122A; line-height: 1.75; }
+h1,h2,h3,h4,h5,h6 { font-weight: 700; line-height: 1.3; }
+h2 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #0A122A1A; }
+pre { background: #0A122A08; border: 1px solid #0A122A0D; border-radius: 0.75rem; padding: 1rem; overflow-x: auto; }
+code { font-size: 0.875rem; font-family: 'Fira Code', monospace; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #0A122A08; border: 1px solid #0A122A1A; padding: 0.5rem 0.75rem; }
+td { border: 1px solid #0A122A1A; padding: 0.5rem 0.75rem; }
+blockquote { border-left: 3px solid #0A122A33; padding-left: 1rem; color: #0A122A99; }
+</style>
+</head>
+<body>
+${htmlContent}
+</body>
+</html>`;
+    const blob = new Blob([fullHTML], { type: "text/html;charset=utf-8" });
+    downloadFile(blob, `${title}.html`);
+  }
+
+  function exportPDF() {
+    setOpen(false);
+    window.print();
+  }
+
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 rounded-full border border-navy/15 bg-white px-4 py-2 text-xs font-semibold text-navy transition-all hover:border-navy/30"
+      >
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Export
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-[calc(100%+6px)] z-20 min-w-[180px] rounded-xl border border-navy/10 bg-white p-1.5 shadow-lg">
+          <button
+            onClick={exportMarkdown}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-[13px] font-medium text-navy transition-colors hover:bg-navy/[0.04]"
+          >
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            Markdown
+            <span className="ml-auto text-[11px] text-navy/50">.md</span>
+          </button>
+          <button
+            onClick={exportHTML}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-[13px] font-medium text-navy transition-colors hover:bg-navy/[0.04]"
+          >
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+            </svg>
+            HTML
+            <span className="ml-auto text-[11px] text-navy/50">.html</span>
+          </button>
+          <button
+            onClick={exportPDF}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-[13px] font-medium text-navy transition-colors hover:bg-navy/[0.04]"
+          >
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            PDF
+            <span className="ml-auto text-[11px] text-navy/50">.pdf</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

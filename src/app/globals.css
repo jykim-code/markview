@@ -1,26 +1,222 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html {
+  scroll-behavior: smooth;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-cream: #FFF7E6;
+  --color-navy: #0A122A;
+  --font-montserrat: "Montserrat", system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Tesla-style fade-in animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out both;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in 0.8s ease-out 0.15s both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fade-in 0.8s ease-out 0.3s both;
+}
+
+/* Prose customization for markdown rendering */
+.prose {
+  --tw-prose-body: #0A122A;
+  --tw-prose-headings: #0A122A;
+  --tw-prose-links: #0A122A;
+  --tw-prose-bold: #0A122A;
+  --tw-prose-counters: #0A122A99;
+  --tw-prose-bullets: #0A122A66;
+  --tw-prose-hr: #0A122A1A;
+  --tw-prose-quotes: #0A122A;
+  --tw-prose-quote-borders: #0A122A33;
+  --tw-prose-code: #0A122A;
+  --tw-prose-th-borders: #0A122A33;
+  --tw-prose-td-borders: #0A122A1A;
+  color: var(--tw-prose-body);
+  max-width: none;
+  line-height: 1.75;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: var(--tw-prose-headings);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #0A122A1A;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose a {
+  color: var(--tw-prose-links);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: #0A122A40;
+  transition: text-decoration-color 0.15s;
+}
+
+.prose a:hover {
+  text-decoration-color: #0A122A;
+}
+
+.prose blockquote {
+  border-left: 3px solid #0A122A33;
+  padding-left: 1rem;
+  color: #0A122A99;
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose th {
+  background-color: #0A122A08;
+  border: 1px solid #0A122A1A;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.prose td {
+  border: 1px solid #0A122A1A;
+  padding: 0.5rem 0.75rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.prose img {
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose hr {
+  border-color: #0A122A1A;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Checkbox styling */
+.prose input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: #0A122A;
+}
+
+/* Code block styling */
+.prose pre {
+  background-color: #0A122A08 !important;
+  border: 1px solid #0A122A0D;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.prose code {
+  font-size: 0.875rem;
+  font-family: "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* KaTeX display math */
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+/* Print styles — PDF export shows only rendered markdown */
+@page {
+  margin: 20mm 15mm;
+}
+
+@media print {
+  /* Hide everything except markdown content */
+  header, footer, aside, textarea, nav,
+  [data-print-hide] {
+    display: none !important;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Reset all containers */
+  html, body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    flex: none !important;
+    position: static !important;
+  }
+
+  /* Remove backgrounds and borders from layout wrappers */
+  main, div, section, article {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Style the markdown content area */
+  .prose {
+    max-width: 100% !important;
+    padding: 0 !important;
+    color: black !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    break-after: avoid;
+  }
+
+  .prose pre, .prose table, .prose img {
+    break-inside: avoid;
+  }
 }
