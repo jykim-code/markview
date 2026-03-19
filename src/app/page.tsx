@@ -19,6 +19,7 @@ export default function Home() {
         <nav className="flex items-center gap-4 md:gap-6">
           <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</a>
           <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
+          <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</a>
           <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
         </nav>
       </header>

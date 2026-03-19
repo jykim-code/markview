@@ -62,8 +62,8 @@
 </head>
 <body>
 
-<!-- ====== ABOUT PAGE ====== -->
-<div class="divider"><span>About Page — /about</span></div>
+<!-- ====== ABOUT PAGE (Option 2: Logo inside card) ====== -->
+<div class="divider"><span>About Page — Option 2: Logo inside card</span></div>
 
 <div class="header">
   <span style="font-size:18px;font-weight:800;letter-spacing:-0.5px">Markview✦</span>
@@ -80,6 +80,10 @@
   <p class="page-subtitle">Markview는 마크다운을 아름답게 렌더링하고, URL 하나로 누구에게나 공유할 수 있는 서비스입니다.</p>
 
   <div class="content-card">
+    <!-- Option 2: Logo inside card top -->
+    <div style="display:flex;align-items:center;justify-content:center;padding:24px 0 32px;border-bottom:1px solid rgba(10,18,42,0.06);margin-bottom:32px;">
+      <img src="markview_text_icon.svg" alt="Markview" style="height:48px;width:auto;" />
+    </div>
     <h2>서비스 소개</h2>
     <p>Markview는 AI가 만든 마크다운(.md) 파일을 업로드하면, 아름답게 렌더링된 웹 문서로 변환하고 URL 하나로 누구에게나 공유할 수 있는 서비스입니다.</p>
     <p>별도의 설치나 로그인 없이, 공유 링크를 받은 사람은 즉시 깔끔하게 렌더링된 문서를 열람할 수 있습니다.</p>
@@ -97,6 +101,58 @@
     <p><strong>운영자:</strong> jeongyeonkim</p>
     <p><strong>이메일:</strong> jeongyeonkim@hancom.com</p>
     <p><strong>기술 스택:</strong> Next.js, Cloudflare Pages, Cloudflare D1</p>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <span class="footer-brand">Markview</span>
+</div>
+
+
+<!-- ====== ABOUT PAGE (Option 3: Full-width hero banner) ====== -->
+<div class="divider"><span>About Page — Option 3: Hero banner</span></div>
+
+<div class="header">
+  <span style="font-size:18px;font-weight:800;letter-spacing:-0.5px">Markview✦</span>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </nav>
+</div>
+
+<!-- Hero banner -->
+<div style="background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;">
+  <img src="markview_text_icon.svg" alt="Markview" style="height:56px;width:auto;margin-bottom:20px;" />
+  <p style="font-size:15px;color:rgba(10,18,42,0.5);max-width:480px;line-height:1.7;">
+    마크다운을 아름답게 렌더링하고,<br>URL 하나로 누구에게나 공유할 수 있는 서비스
+  </p>
+</div>
+
+<div class="page-section" style="padding-top:40px;">
+  <div class="content-card">
+    <h2>서비스 소개</h2>
+    <p>Markview는 AI가 만든 마크다운(.md) 파일을 업로드하면, 아름답게 렌더링된 웹 문서로 변환하고 URL 하나로 누구에게나 공유할 수 있는 서비스입니다.</p>
+    <p>별도의 설치나 로그인 없이, 공유 링크를 받은 사람은 즉시 깔끔하게 렌더링된 문서를 열람할 수 있습니다.</p>
+
+    <h2>주요 기능</h2>
+    <ul>
+      <li>GFM, 코드 구문 강조, LaTeX 수식, Mermaid 다이어그램 지원</li>
+      <li>실시간 마크다운 편집 (View / Edit 모드)</li>
+      <li>Markdown, HTML, PDF 내보내기</li>
+      <li>URL 공유 — 링크 하나로 누구나 열람</li>
+      <li>자동 목차(TOC) 생성</li>
+    </ul>
+
+    <h2>운영자 정보</h2>
+    <p><strong>운영자:</strong> jeongyeonkim</p>
+    <p><strong>이메일:</strong> jeongyeonkim@hancom.com</p>
   </div>
 </div>
 
