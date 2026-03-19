@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pages:build": "npx @opennextjs/cloudflare build && node scripts/prepare-pages.mjs"
   },
   "dependencies": {
     "mermaid": "^11.13.0",
