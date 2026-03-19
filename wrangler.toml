@@ -6,4 +6,4 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "markview-db"
-database_id = ""
+database_id = "0959181b-696b-4eb0-8b0a-5d7ace2905cc"
