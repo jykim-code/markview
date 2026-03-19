@@ -39,9 +39,10 @@ export default function ContactPage() {
 
       <div className="mx-auto max-w-[720px] px-5 pb-20 pt-10 md:px-6 md:pt-16">
         <h1 className="text-[28px] font-extrabold tracking-tight text-navy md:text-4xl">Contact</h1>
-        <p className="mt-3 text-[15px] text-navy/50">
-          서비스 이용 중 불편한 점이나 개선 아이디어가 있으시면 언제든지 이메일로 연락해주세요.
-          빠른 시일 내에 답변드리겠습니다 :)
+        <p className="mt-3 text-[15px] leading-relaxed text-navy/50">
+          문의 및 피드백이 있다면 언제든지 연락주세요.
+          <br />
+          Markview는 여러분의 의견을 기다립니다:)
         </p>
 
         <div className="mt-10 rounded-3xl bg-cream p-8 md:p-12">
