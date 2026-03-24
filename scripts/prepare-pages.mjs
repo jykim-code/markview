@@ -10,7 +10,7 @@ cpSync(".open-next/assets", ".open-next", { recursive: true });
 const routes = {
   version: 1,
   include: ["/*"],
-  exclude: ["/_next/static/*", "/M.svg", "/markview_text_icon.svg", "/markview_icon.png", "/ads.txt"],
+  exclude: ["/_next/static/*", "/M.svg", "/markview_text_icon.svg", "/markview_text_icon_dark.svg", "/markview_icon.png", "/ads.txt", "/design-preview.html"],
 };
 
 writeFileSync(".open-next/_routes.json", JSON.stringify(routes, null, 2));
