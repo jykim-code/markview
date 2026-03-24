@@ -26,9 +26,6 @@ export default function AboutPage() {
 
       <div className="mx-auto max-w-[720px] px-5 pb-20 pt-10 md:px-6 md:pt-16">
         <h1 className="text-[28px] font-extrabold tracking-tight text-navy md:text-4xl">About</h1>
-        <p className="mt-3 text-[15px] text-navy/50">
-          Markview는 마크다운을 아름답게 렌더링하고, URL 하나로 누구에게나 공유할 수 있는 서비스입니다.
-        </p>
 
         <div className="mt-10 rounded-3xl bg-cream p-8 transition-colors duration-300 md:p-12">
           <div className="mb-8 flex items-center justify-center border-b border-navy/[0.06] pb-8">
@@ -45,12 +42,13 @@ export default function AboutPage() {
 
           <h2 className="mt-8 text-lg font-bold text-navy">주요 기능</h2>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-relaxed text-navy/70">
-            <li>자동 목차(TOC) 생성</li> 
             <li>URL 공유 — 링크 하나로 누구나 열람</li>
+            <li>자동 목차(TOC) 생성</li>
             <li>실시간 마크다운 편집 (View / Edit 모드)</li>
+            <li>마크다운 원본 복사 버튼</li>
             <li>Markdown, HTML, PDF 내보내기</li>
             <li>GFM, 코드 구문 강조, LaTeX 수식, Mermaid 다이어그램 지원</li>
-           
+            <li>다크 / 라이트 모드 전환</li>
           </ul>
 
           <h2 className="mt-8 text-lg font-bold text-navy">운영자 정보</h2>
