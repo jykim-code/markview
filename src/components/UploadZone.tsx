@@ -108,7 +108,7 @@ export function UploadZone() {
         <>
           <button
             onClick={handleClick}
-            className="rounded-full bg-navy px-12 py-4 text-base font-bold text-white transition-all hover:opacity-85 active:scale-[0.98]"
+            className="rounded-full bg-navy px-12 py-4 text-base font-bold text-bg transition-all hover:opacity-85 active:scale-[0.98]"
           >
             .md 파일 업로드
           </button>
@@ -128,7 +128,7 @@ export function UploadZone() {
       />
 
       {error && (
-        <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-500">
+        <div className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
           {error}
         </div>
       )}

@@ -44,7 +44,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
 
   return (
     <nav className="sticky top-20">
-      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-navy/40">
+      <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[2px] text-navy/40">
         목차
       </h2>
       <ul className="space-y-1.5 border-l border-navy/10">

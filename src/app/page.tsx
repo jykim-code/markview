@@ -1,31 +1,27 @@
 import Image from "next/image";
 import { UploadZone } from "@/components/UploadZone";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col bg-white">
+    <main className="flex min-h-screen flex-col bg-bg">
       {/* Header Bar */}
-      <header className="sticky top-0 z-50 flex h-[66px] items-center justify-between border-b border-navy bg-white px-8">
+      <header className="sticky top-0 z-50 flex h-[66px] items-center justify-between bg-bg px-8 transition-colors duration-300" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <a href="/">
-          <Image
-            src="/markview_text_icon.svg"
-            alt="Markview"
-            width={200}
-            height={56}
-            priority
-            className="h-7 w-auto"
-          />
+          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-light" />
+          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-dark" />
         </a>
         <nav className="flex items-center gap-4 md:gap-6">
           <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</a>
           <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
           <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</a>
           <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
+          <ThemeToggle />
         </nav>
       </header>
 
       {/* Hero Section - cream bg, responsive */}
-      <section className="flex min-h-[calc(100vh-66px)] flex-col items-center justify-center gap-8 overflow-hidden bg-cream px-6 py-12 md:flex-row md:gap-12 md:px-16 md:py-16">
+      <section className="flex min-h-[calc(100vh-66px)] flex-col items-center justify-center gap-8 overflow-hidden bg-cream px-6 py-12 transition-colors duration-300 md:flex-row md:gap-12 md:px-16 md:py-16">
         {/* Left: Big text */}
         <div className="max-w-[480px] flex-1 animate-fade-in text-center md:text-left">
           <h1
@@ -43,7 +39,7 @@ export default function Home() {
             <br />
             형태로.
           </h1>
-          <p className="mt-6 text-sm font-medium leading-relaxed text-navy/50 md:text-base">
+          <p className="mt-6 text-base font-medium leading-[1.8] text-navy/50">
             AI가 만든 마크다운 파일을 업로드하면,
             <br />
             누구나 읽기 편한 웹 문서로 변환하고
@@ -54,7 +50,7 @@ export default function Home() {
 
         {/* Right: Upload card */}
         <div className="w-full max-w-[440px] flex-1 animate-fade-in-delay">
-          <div className="flex flex-col items-center gap-5 rounded-3xl bg-white p-8 text-center shadow-2xl md:p-12">
+          <div className="flex flex-col items-center gap-5 rounded-3xl bg-bg p-8 text-center shadow-[var(--shadow-card)] md:p-12">
             <UploadZone />
           </div>
         </div>

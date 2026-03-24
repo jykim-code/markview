@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "개인정보 처리방침 — Markview",
@@ -8,16 +9,18 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between border-b border-navy bg-white px-4 md:px-8">
+    <main className="min-h-screen bg-bg transition-colors duration-300">
+      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-4 md:px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <a href="/" className="transition-opacity hover:opacity-70">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto" />
+          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-light" />
+          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-dark" />
         </a>
         <nav className="flex items-center gap-4 md:gap-6">
           <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</a>
           <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
           <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy">Privacy</a>
           <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
+          <ThemeToggle />
         </nav>
       </header>
 
@@ -25,7 +28,7 @@ export default function PrivacyPage() {
         <h1 className="text-[28px] font-extrabold tracking-tight text-navy md:text-4xl">개인정보 처리방침</h1>
         <p className="mt-3 text-[15px] text-navy/50">최종 수정일: 2026년 3월 19일</p>
 
-        <div className="mt-10 rounded-3xl bg-cream p-8 md:p-12">
+        <div className="mt-10 rounded-3xl bg-cream p-8 transition-colors duration-300 md:p-12">
           <h2 className="text-lg font-bold text-navy">1. 수집하는 개인정보</h2>
           <p className="mt-3 text-sm leading-relaxed text-navy/70">
             Markview는 서비스 제공을 위해 최소한의 정보만 처리합니다.
@@ -47,7 +50,7 @@ export default function PrivacyPage() {
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-navy/70">
             <li>
               <strong>Google AdSense:</strong> 광고 제공 목적으로 쿠키를 사용할 수 있습니다. Google의 광고 쿠키 사용에 대한 자세한 내용은{" "}
-              <a href="https://policies.google.com/technologies/ads" className="underline underline-offset-2" target="_blank" rel="noopener noreferrer">
+              <a href="https://policies.google.com/technologies/ads" className="text-link underline underline-offset-2" target="_blank" rel="noopener noreferrer">
                 Google 광고 정책
               </a>
               을 참조하세요.

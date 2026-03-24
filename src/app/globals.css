@@ -7,8 +7,53 @@ html {
 @theme {
   --color-cream: #FFF7E6;
   --color-navy: #0A122A;
+  --color-bg: #ffffff;
+  --color-bg-alt: #ffffff;
+  --color-surface: #F8F6F1;
+  --color-link: #0A122A;
   --font-montserrat: "Montserrat", system-ui, -apple-system, sans-serif;
 }
+
+/* Dark mode overrides — all Tailwind utilities using these tokens adapt automatically */
+[data-theme="dark"] {
+  --color-cream: #1a1a2e;
+  --color-navy: #FFF7E6;
+  --color-bg: #0f0f1a;
+  --color-bg-alt: #16162a;
+  --color-surface: #1e1e32;
+  --color-link: #8b9cf7;
+}
+
+/* Exact srgb values matching design HTML — asymmetric light/dark */
+:root {
+  --header-border: #0A122A;
+  --label-text: rgba(10, 18, 42, 0.7);
+  --label-bg: rgba(10, 18, 42, 0.02);
+  --label-border: rgba(10, 18, 42, 0.06);
+  --editor-border: rgba(10, 18, 42, 0.08);
+  --shadow-card: 0 20px 60px rgba(10, 18, 42, 0.08), 0 4px 16px rgba(10, 18, 42, 0.04);
+}
+
+[data-theme="dark"] {
+  --header-border: rgba(255, 247, 230, 0.25);
+  --label-text: rgba(255, 247, 230, 0.75);
+  --label-bg: rgba(255, 247, 230, 0.03);
+  --label-border: rgba(255, 247, 230, 0.06);
+  --editor-border: rgba(255, 247, 230, 0.08);
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Body base background — matches HTML design's body { background: var(--bg) } */
+body {
+  background-color: var(--color-bg);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Logo swap in dark mode — show/hide light vs dark versions */
+.logo-light { display: block; }
+.logo-dark { display: none; }
+[data-theme="dark"] .logo-light { display: none; }
+[data-theme="dark"] .logo-dark { display: block; }
 
 /* Tesla-style fade-in animations */
 @keyframes fade-in {
@@ -30,18 +75,18 @@ html {
 
 /* Prose customization for markdown rendering */
 .prose {
-  --tw-prose-body: #0A122A;
-  --tw-prose-headings: #0A122A;
-  --tw-prose-links: #0A122A;
-  --tw-prose-bold: #0A122A;
-  --tw-prose-counters: #0A122A99;
-  --tw-prose-bullets: #0A122A66;
-  --tw-prose-hr: #0A122A1A;
-  --tw-prose-quotes: #0A122A;
-  --tw-prose-quote-borders: #0A122A33;
-  --tw-prose-code: #0A122A;
-  --tw-prose-th-borders: #0A122A33;
-  --tw-prose-td-borders: #0A122A1A;
+  --tw-prose-body: var(--color-navy);
+  --tw-prose-headings: var(--color-navy);
+  --tw-prose-links: var(--color-navy);
+  --tw-prose-bold: var(--color-navy);
+  --tw-prose-counters: color-mix(in srgb, var(--color-navy) 60%, transparent);
+  --tw-prose-bullets: color-mix(in srgb, var(--color-navy) 40%, transparent);
+  --tw-prose-hr: color-mix(in srgb, var(--color-navy) 10%, transparent);
+  --tw-prose-quotes: var(--color-navy);
+  --tw-prose-quote-borders: color-mix(in srgb, var(--color-navy) 20%, transparent);
+  --tw-prose-code: var(--color-navy);
+  --tw-prose-th-borders: color-mix(in srgb, var(--color-navy) 20%, transparent);
+  --tw-prose-td-borders: color-mix(in srgb, var(--color-navy) 10%, transparent);
   color: var(--tw-prose-body);
   max-width: none;
   line-height: 1.75;
@@ -58,7 +103,7 @@ html {
   margin-top: 2rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #0A122A1A;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-navy) 10%, transparent);
 }
 
 .prose h3 {
@@ -76,18 +121,18 @@ html {
   color: var(--tw-prose-links);
   text-decoration: underline;
   text-underline-offset: 2px;
-  text-decoration-color: #0A122A40;
+  text-decoration-color: color-mix(in srgb, var(--color-navy) 25%, transparent);
   transition: text-decoration-color 0.15s;
 }
 
 .prose a:hover {
-  text-decoration-color: #0A122A;
+  text-decoration-color: var(--color-navy);
 }
 
 .prose blockquote {
-  border-left: 3px solid #0A122A33;
+  border-left: 3px solid color-mix(in srgb, var(--color-navy) 20%, transparent);
   padding-left: 1rem;
-  color: #0A122A99;
+  color: color-mix(in srgb, var(--color-navy) 60%, transparent);
   font-style: italic;
 }
 
@@ -97,15 +142,15 @@ html {
 }
 
 .prose th {
-  background-color: #0A122A08;
-  border: 1px solid #0A122A1A;
+  background-color: color-mix(in srgb, var(--color-navy) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-navy) 10%, transparent);
   padding: 0.5rem 0.75rem;
   text-align: left;
   font-weight: 600;
 }
 
 .prose td {
-  border: 1px solid #0A122A1A;
+  border: 1px solid color-mix(in srgb, var(--color-navy) 10%, transparent);
   padding: 0.5rem 0.75rem;
 }
 
@@ -131,7 +176,7 @@ html {
 }
 
 .prose hr {
-  border-color: #0A122A1A;
+  border-color: color-mix(in srgb, var(--color-navy) 10%, transparent);
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
@@ -139,13 +184,13 @@ html {
 /* Checkbox styling */
 .prose input[type="checkbox"] {
   margin-right: 0.5rem;
-  accent-color: #0A122A;
+  accent-color: var(--color-navy);
 }
 
 /* Code block styling */
 .prose pre {
-  background-color: #0A122A08 !important;
-  border: 1px solid #0A122A0D;
+  background-color: color-mix(in srgb, var(--color-navy) 3%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-navy) 5%, transparent);
   border-radius: 0.75rem;
   padding: 1rem;
   overflow-x: auto;
@@ -156,12 +201,41 @@ html {
   font-family: "Fira Code", "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* Override highlight.js colors in dark mode */
+[data-theme="dark"] .prose pre,
+[data-theme="dark"] .hljs {
+  background-color: color-mix(in srgb, var(--color-navy) 6%, var(--color-bg)) !important;
+  color: var(--color-navy) !important;
+}
+
+[data-theme="dark"] .hljs-keyword,
+[data-theme="dark"] .hljs-selector-tag,
+[data-theme="dark"] .hljs-type { color: #c792ea !important; }
+
+[data-theme="dark"] .hljs-string,
+[data-theme="dark"] .hljs-attr { color: #c3e88d !important; }
+
+[data-theme="dark"] .hljs-number,
+[data-theme="dark"] .hljs-literal { color: #f78c6c !important; }
+
+[data-theme="dark"] .hljs-comment { color: #697098 !important; }
+
+[data-theme="dark"] .hljs-built_in,
+[data-theme="dark"] .hljs-title { color: #82aaff !important; }
+
+[data-theme="dark"] .hljs-function { color: #82aaff !important; }
+
+[data-theme="dark"] .hljs-params { color: #d8dee9 !important; }
+
 /* KaTeX display math */
 .prose .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.5rem 0;
 }
+
+/* KaTeX dark mode */
+[data-theme="dark"] .katex { color: var(--color-navy); }
 
 /* Print styles — PDF export shows only rendered markdown */
 @page {

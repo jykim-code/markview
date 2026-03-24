@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { TableOfContents } from "./TableOfContents";
 import { ExportButton } from "./ExportButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 type ViewMode = "view" | "edit";
 
@@ -56,10 +57,11 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between border-b border-navy bg-white px-8">
+      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <div className="flex items-center gap-4">
           <a href="/" className="transition-opacity hover:opacity-70">
-            <img src="/markview_text_icon.svg" alt="Markview" className="h-7" />
+            <img src="/markview_text_icon.svg" alt="Markview" className="h-7 logo-light" />
+            <img src="/markview_text_icon_dark.svg" alt="Markview" className="h-7 logo-dark" />
           </a>
           {/* Mode toggle */}
           <div className="flex gap-0.5 rounded-full bg-navy/[0.06] p-[3px]">
@@ -69,7 +71,7 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
                 onClick={() => setMode(m)}
                 className={`rounded-full px-3.5 py-1.5 font-montserrat text-xs font-semibold transition-all ${
                   mode === m
-                    ? "bg-white text-navy shadow-sm"
+                    ? "bg-bg text-navy shadow-sm"
                     : "text-navy/50 hover:text-navy/70"
                 }`}
               >
@@ -80,11 +82,11 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Save button - white style */}
+          {/* Save button - primary (navy) */}
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-1.5 rounded-full border border-navy/15 bg-white px-4 py-2 text-xs font-semibold text-navy transition-all hover:border-navy/30 disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-full bg-navy px-5 py-2 text-xs font-semibold text-bg transition-all hover:opacity-85 disabled:opacity-50"
           >
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4z" />
@@ -96,16 +98,19 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
           {/* Export */}
           <ExportButton content={content} title={title} />
 
-          {/* Share - navy style (primary CTA) */}
+          {/* Share - secondary (border) */}
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 rounded-full bg-navy px-5 py-2 text-xs font-semibold text-white transition-all hover:opacity-85"
+            className="flex items-center gap-1.5 rounded-full border border-navy/15 bg-bg px-4 py-2 text-xs font-semibold text-navy transition-all hover:border-navy/30"
           >
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
             {copied ? "복사 완료!" : "공유"}
           </button>
+
+          {/* Theme toggle */}
+          <ThemeToggle />
         </div>
       </header>
 
@@ -113,17 +118,16 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
       <div className="flex flex-1">
         {/* Editor pane */}
         {mode === "edit" && (
-          <div data-print-hide className="flex flex-1 flex-col border-r border-navy/[0.08]">
-            <div className="border-b border-navy/[0.06] bg-navy/[0.03] px-5 py-3 text-[10px] font-bold uppercase tracking-[2px] text-navy/50">
+          <div data-print-hide className="flex flex-1 flex-col" style={{ borderRight: '1px solid var(--editor-border)' }}>
+            <div className="px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
               Markdown
             </div>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="flex-1 resize-none p-5 text-sm leading-relaxed text-navy outline-none"
+              className="flex-1 resize-none bg-bg p-5 text-sm leading-relaxed text-navy outline-none transition-colors"
               style={{
                 fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
-                backgroundColor: "#F8F6F1",
               }}
               spellCheck={false}
             />
@@ -134,14 +138,14 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
         {(mode === "edit" || mode === "view") && (
           <div className={`flex flex-col overflow-y-auto ${mode === "edit" ? "flex-1" : "flex-1"}`}>
             {mode === "edit" && (
-              <div data-print-hide className="border-b border-navy/[0.06] bg-navy/[0.02] px-5 py-3 text-[10px] font-bold uppercase tracking-[2px] text-navy/50">
+              <div data-print-hide className="px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
                 Preview
               </div>
             )}
             <div className="flex-1 bg-cream p-8">
               {mode === "view" ? (
                 <div className="mx-auto max-w-[900px]">
-                  <h1 className="mb-8 text-[32px] font-bold tracking-tight text-navy" style={{ lineHeight: 1.3 }}>
+                  <h1 className="mb-8 text-[32px] font-bold tracking-tight text-navy md:text-[40px]" style={{ lineHeight: 1.3 }}>
                     {title}
                   </h1>
                   <div className="flex gap-10">

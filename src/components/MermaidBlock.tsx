@@ -17,17 +17,33 @@ export function MermaidBlock({ chart }: MermaidBlockProps) {
     async function renderMermaid() {
       try {
         const mermaid = (await import("mermaid")).default;
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         mermaid.initialize({
           startOnLoad: false,
           theme: "base",
-          themeVariables: {
-            primaryColor: "#FFF7E6",
-            primaryTextColor: "#0A122A",
-            primaryBorderColor: "#0A122A",
-            lineColor: "#0A122A",
-            secondaryColor: "#f0ead6",
-            tertiaryColor: "#e8e0cc",
-          },
+          themeVariables: isDark
+            ? {
+                primaryColor: "#1a1a2e",
+                primaryTextColor: "#FFF7E6",
+                primaryBorderColor: "rgba(255,247,230,0.3)",
+                lineColor: "rgba(255,247,230,0.5)",
+                secondaryColor: "#16162a",
+                tertiaryColor: "#1e1e32",
+                background: "#0f0f1a",
+                mainBkg: "#1a1a2e",
+                nodeBorder: "rgba(255,247,230,0.3)",
+                clusterBkg: "#16162a",
+                titleColor: "#FFF7E6",
+                edgeLabelBackground: "#1a1a2e",
+              }
+            : {
+                primaryColor: "#FFF7E6",
+                primaryTextColor: "#0A122A",
+                primaryBorderColor: "#0A122A",
+                lineColor: "#0A122A",
+                secondaryColor: "#f0ead6",
+                tertiaryColor: "#e8e0cc",
+              },
         });
 
         const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
@@ -50,7 +66,7 @@ export function MermaidBlock({ chart }: MermaidBlockProps) {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+      <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
         {error}
       </div>
     );

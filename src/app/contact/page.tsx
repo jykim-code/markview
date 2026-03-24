@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -24,16 +25,18 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between border-b border-navy bg-white px-4 md:px-8">
+    <main className="min-h-screen bg-bg transition-colors duration-300">
+      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-4 md:px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <a href="/" className="transition-opacity hover:opacity-70">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto" />
+          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-light" />
+          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-dark" />
         </a>
         <nav className="flex items-center gap-4 md:gap-6">
           <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</a>
           <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
           <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</a>
           <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy">Contact</a>
+          <ThemeToggle />
         </nav>
       </header>
 
@@ -45,11 +48,11 @@ export default function ContactPage() {
           Markview는 여러분의 의견을 기다립니다:)
         </p>
 
-        <div className="mt-10 rounded-3xl bg-cream p-8 md:p-12">
+        <div className="mt-10 rounded-3xl bg-cream p-8 transition-colors duration-300 md:p-12">
           {submitted ? (
             <div className="flex flex-col items-center py-8 text-center">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
-                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
+                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} className="text-bg">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -73,7 +76,7 @@ export default function ContactPage() {
                   id="name"
                   name="name"
                   required
-                  className="w-full rounded-xl border border-navy/10 bg-white px-4 py-3 text-sm text-navy outline-none transition-colors focus:border-navy/30"
+                  className="w-full rounded-xl border border-navy/10 bg-bg px-4 py-3 text-sm text-navy outline-none transition-colors focus:border-navy/30"
                   placeholder="홍길동"
                 />
               </div>
@@ -86,7 +89,7 @@ export default function ContactPage() {
                   id="email"
                   name="email"
                   required
-                  className="w-full rounded-xl border border-navy/10 bg-white px-4 py-3 text-sm text-navy outline-none transition-colors focus:border-navy/30"
+                  className="w-full rounded-xl border border-navy/10 bg-bg px-4 py-3 text-sm text-navy outline-none transition-colors focus:border-navy/30"
                   placeholder="example@email.com"
                 />
               </div>
@@ -99,14 +102,14 @@ export default function ContactPage() {
                   name="message"
                   required
                   rows={5}
-                  className="w-full resize-none rounded-xl border border-navy/10 bg-white px-4 py-3 text-sm leading-relaxed text-navy outline-none transition-colors focus:border-navy/30"
+                  className="w-full resize-none rounded-xl border border-navy/10 bg-bg px-4 py-3 text-sm leading-relaxed text-navy outline-none transition-colors focus:border-navy/30"
                   placeholder="문의 내용을 입력해주세요."
                 />
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className="self-start rounded-full bg-navy px-8 py-3 text-sm font-semibold text-white transition-all hover:opacity-85 disabled:opacity-50"
+                className="self-start rounded-full bg-navy px-8 py-3 text-sm font-semibold text-bg transition-all hover:opacity-85 disabled:opacity-50"
               >
                 {submitting ? "전송 중..." : "보내기"}
               </button>

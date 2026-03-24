@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "About — Markview",
@@ -8,16 +9,18 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between border-b border-navy bg-white px-4 md:px-8">
+    <main className="min-h-screen bg-bg transition-colors duration-300">
+      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-4 md:px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <a href="/" className="transition-opacity hover:opacity-70">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto" />
+          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-light" />
+          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-dark" />
         </a>
         <nav className="flex items-center gap-4 md:gap-6">
           <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</a>
           <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy">About</a>
           <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</a>
           <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
+          <ThemeToggle />
         </nav>
       </header>
 
@@ -27,9 +30,10 @@ export default function AboutPage() {
           Markview는 마크다운을 아름답게 렌더링하고, URL 하나로 누구에게나 공유할 수 있는 서비스입니다.
         </p>
 
-        <div className="mt-10 rounded-3xl bg-cream p-8 md:p-12">
+        <div className="mt-10 rounded-3xl bg-cream p-8 transition-colors duration-300 md:p-12">
           <div className="mb-8 flex items-center justify-center border-b border-navy/[0.06] pb-8">
-            <Image src="/markview_text_icon.svg" alt="Markview" width={400} height={100} className="h-12 w-auto" />
+            <Image src="/markview_text_icon.svg" alt="Markview" width={400} height={100} className="h-12 w-auto logo-light" />
+            <Image src="/markview_text_icon_dark.svg" alt="Markview" width={400} height={100} className="h-12 w-auto logo-dark" />
           </div>
           <h2 className="text-lg font-bold text-navy">서비스 소개</h2>
           <p className="mt-3 text-sm leading-relaxed text-navy/70">

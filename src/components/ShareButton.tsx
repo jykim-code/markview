@@ -30,7 +30,7 @@ export function ShareButton() {
         transition-all duration-200 active:scale-[0.98]
         ${
           copied
-            ? "bg-emerald-500 text-white"
+            ? "bg-emerald-500 text-bg"
             : "bg-navy text-cream hover:bg-navy/90"
         }
       `}
