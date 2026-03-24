@@ -62,7 +62,7 @@
     --surface-hover: rgba(255,247,230,0.06);
     --surface-tint: rgba(255,247,230,0.03);
     --surface-toggle: rgba(255,247,230,0.08);
-    --shadow-card: 0 20px 60px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
     --shadow-btn: 0 1px 3px rgba(0,0,0,0.3);
     --shadow-menu: 0 8px 32px rgba(0,0,0,0.4);
     --drop-border: rgba(255,247,230,0.12);
@@ -95,6 +95,10 @@
   }
 
   .header-bar .logo { height: 28px; }
+  .logo-light { display: inline; }
+  .logo-dark { display: none; }
+  [data-theme="dark"] .logo-light { display: none; }
+  [data-theme="dark"] .logo-dark { display: inline; }
 
   .header-bar nav {
     display: flex;
@@ -561,7 +565,26 @@
     padding: 12px 20px;
     border-bottom: 1px solid var(--border-lighter);
     background: var(--surface-tint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
+
+  .btn-copy-md {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .btn-copy-md:hover { color: var(--text); }
+  .btn-copy-md svg { width: 14px; height: 14px; }
+  .btn-copy-md.copied { color: #0A122A; }
+  [data-theme="dark"] .btn-copy-md.copied { color: #B8961F; }
 
   .split-editor textarea {
     flex: 1;
@@ -614,6 +637,39 @@
   .not-found h1 { font-size: 80px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; color: var(--text); }
   .not-found p { font-size: 18px; color: var(--text-muted); margin-bottom: 40px; }
 
+  /* ===== LEGAL PAGES (About, Privacy, Contact) ===== */
+  .legal-page-section { max-width: 720px; margin: 0 auto; padding: 60px 24px 80px; }
+  .legal-page-title { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+  .legal-page-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 48px; }
+
+  .legal-content-card { background: var(--bg-card); border-radius: 24px; padding: 48px; transition: background 0.3s; }
+  .legal-content-card h2 { font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: var(--text); }
+  .legal-content-card h2:first-child { margin-top: 0; }
+  .legal-content-card p { font-size: 14px; line-height: 1.8; color: var(--text-secondary); margin-bottom: 12px; }
+  .legal-content-card ul { padding-left: 20px; margin-bottom: 12px; }
+  .legal-content-card li { font-size: 14px; line-height: 1.8; color: var(--text-secondary); margin-bottom: 4px; }
+
+  .legal-contact-card {
+    background: var(--bg-card); border-radius: 24px; padding: 48px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    transition: background 0.3s;
+  }
+  .legal-contact-icon { width: 64px; height: 64px; background: var(--text); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; transition: background 0.3s; }
+  .legal-contact-icon svg { width: 28px; height: 28px; stroke: var(--bg); fill: none; stroke-width: 2; }
+  .legal-contact-email { font-size: 20px; font-weight: 700; color: var(--text); text-decoration: none; margin-bottom: 8px; }
+  .legal-contact-email:hover { text-decoration: underline; }
+  .legal-contact-desc { font-size: 14px; color: var(--text-muted); max-width: 400px; line-height: 1.7; }
+
+  .legal-footer {
+    max-width: 720px; margin: 0 auto; padding: 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border-light);
+  }
+  .legal-footer-links { display: flex; gap: 20px; }
+  .legal-footer-links a { font-size: 11px; font-weight: 600; color: var(--text-faint); text-decoration: none; }
+  .legal-footer-links a:hover { color: var(--text); }
+  .legal-footer-brand { font-size: 10px; letter-spacing: 3px; color: var(--text-ghost); text-transform: uppercase; }
+
   /* Section label */
   .section-label {
     text-align: center;
@@ -635,7 +691,7 @@
 
 <!-- Header -->
 <div class="header-bar">
-  <img src="/markview_text_icon.png" alt="Markview" class="logo">
+  <img src="./markview_text_icon.svg" alt="Markview" class="logo logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo logo-dark">
   <nav>
     <a href="#" class="active">HOME</a>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
@@ -701,7 +757,7 @@
 
 <div class="view">
   <div class="view-header">
-    <img src="/markview_text_icon.png" alt="Markview" class="view-logo">
+    <img src="./markview_text_icon.svg" alt="Markview" class="view-logo logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="view-logo logo-dark">
     <button class="btn-share">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
@@ -767,7 +823,7 @@
   <!-- Header with mode toggle + actions -->
   <div class="split-header">
     <div class="header-left">
-      <img src="/markview_text_icon.png" alt="Markview">
+      <img src="./markview_text_icon.svg" alt="Markview" class="logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo-dark">
       <div class="mode-toggle">
         <button class="mode-btn">Preview</button>
         <button class="mode-btn active">Split</button>
@@ -820,7 +876,12 @@
   <div class="split-body">
     <!-- Left: Editor -->
     <div class="split-editor">
-      <div class="editor-label">Markdown</div>
+      <div class="editor-label">
+        <span>Markdown</span>
+        <button class="btn-copy-md" onclick="copyMarkdown(this)" aria-label="복사">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
       <textarea># TOC Test Document
 
 ## Introduction
@@ -871,13 +932,190 @@ Thank you for using Markview!</textarea>
 <div class="section-label">Page 3 — 404</div>
 
 <div class="not-found">
-  <img src="/markview_text_icon.png" alt="Markview" class="logo-faded">
+  <img src="./markview_text_icon.svg" alt="Markview" class="logo-faded logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo-faded logo-dark">
   <h1>404</h1>
   <p>문서를 찾을 수 없습니다.</p>
   <button class="btn-upload">메인으로 돌아가기</button>
 </div>
 
+<!-- ===================== ABOUT (Option 2: Logo inside card) ===================== -->
+<div class="section-label">Page 4 — About (Logo inside card)</div>
+
+<div class="header-bar">
+  <img src="./markview_text_icon.svg" alt="Markview" class="logo logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo logo-dark">
+  <nav>
+    <a href="#">HOME</a>
+    <a href="#">ABOUT</a>
+    <a href="#">PRIVACY</a>
+    <a href="#">CONTACT</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+</div>
+
+<div class="legal-page-section">
+  <h1 class="legal-page-title">About</h1>
+  <p class="legal-page-subtitle">Markview는 마크다운을 아름답게 렌더링하고, URL 하나로 누구에게나 공유할 수 있는 서비스입니다.</p>
+
+  <div class="legal-content-card">
+    <div style="display:flex;align-items:center;justify-content:center;padding:24px 0 32px;border-bottom:1px solid var(--border-light);margin-bottom:32px;">
+      <img src="./markview_text_icon.svg" alt="Markview" style="height:48px;width:auto;" class="logo-light" /><img src="./markview_text_icon_dark.svg" alt="Markview" style="height:48px;width:auto;" class="logo-dark" />
+    </div>
+    <h2>서비스 소개</h2>
+    <p>Markview는 AI가 만든 마크다운(.md) 파일을 업로드하면, 아름답게 렌더링된 웹 문서로 변환하고 URL 하나로 누구에게나 공유할 수 있는 서비스입니다.</p>
+    <p>별도의 설치나 로그인 없이, 공유 링크를 받은 사람은 즉시 깔끔하게 렌더링된 문서를 열람할 수 있습니다.</p>
+
+    <h2>주요 기능</h2>
+    <ul>
+      <li>GFM, 코드 구문 강조, LaTeX 수식, Mermaid 다이어그램 지원</li>
+      <li>실시간 마크다운 편집 (View / Edit 모드)</li>
+      <li>Markdown, HTML, PDF 내보내기</li>
+      <li>URL 공유 — 링크 하나로 누구나 열람</li>
+      <li>자동 목차(TOC) 생성</li>
+    </ul>
+
+    <h2>운영자 정보</h2>
+    <p><strong>운영자:</strong> jeongyeonkim</p>
+    <p><strong>이메일:</strong> jeongyeonkim@hancom.com</p>
+    <p><strong>기술 스택:</strong> Next.js, Cloudflare Pages, Cloudflare D1</p>
+  </div>
+</div>
+
+<div class="legal-footer">
+  <div class="legal-footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <span class="legal-footer-brand">Markview — Markdown + View</span>
+</div>
+
+
+<!-- ===================== PRIVACY ===================== -->
+<div class="section-label">Page 5 — Privacy</div>
+
+<div class="header-bar">
+  <img src="./markview_text_icon.svg" alt="Markview" class="logo logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo logo-dark">
+  <nav>
+    <a href="#">HOME</a>
+    <a href="#">ABOUT</a>
+    <a href="#">PRIVACY</a>
+    <a href="#">CONTACT</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+</div>
+
+<div class="legal-page-section">
+  <h1 class="legal-page-title">개인정보 처리방침</h1>
+  <p class="legal-page-subtitle">최종 수정일: 2026년 3월 19일</p>
+
+  <div class="legal-content-card">
+    <h2>1. 수집하는 개인정보</h2>
+    <p>Markview는 서비스 제공을 위해 최소한의 정보만 처리합니다.</p>
+    <ul>
+      <li>업로드된 마크다운 파일 내용 (문서 렌더링 및 공유 목적)</li>
+      <li>자동 수집 정보: 쿠키, 접속 로그, IP 주소 (서비스 운영 및 보안 목적)</li>
+    </ul>
+
+    <h2>2. 개인정보의 이용 목적</h2>
+    <ul>
+      <li>마크다운 문서의 렌더링 및 공유 URL 생성</li>
+      <li>서비스 품질 개선 및 오류 분석</li>
+      <li>부정 이용 방지</li>
+    </ul>
+
+    <h2>3. 제3자 서비스</h2>
+    <p>Markview는 다음 제3자 서비스를 사용합니다:</p>
+    <ul>
+      <li><strong>Google AdSense:</strong> 광고 제공 목적으로 쿠키를 사용할 수 있습니다.</li>
+      <li><strong>Cloudflare:</strong> 호스팅 및 CDN 서비스 제공</li>
+    </ul>
+
+    <h2>4. 데이터 보관 및 삭제</h2>
+    <p>업로드된 문서는 서비스 제공 기간 동안 보관되며, 서비스 종료 시 삭제됩니다.</p>
+
+    <h2>5. 이용자의 권리</h2>
+    <p>이용자는 언제든지 자신의 데이터 삭제를 요청할 수 있습니다. 문의는 아래 이메일로 연락해주세요.</p>
+    <p><strong>문의:</strong> jeongyeonkim@hancom.com</p>
+  </div>
+</div>
+
+<div class="legal-footer">
+  <div class="legal-footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <span class="legal-footer-brand">Markview — Markdown + View</span>
+</div>
+
+
+<!-- ===================== CONTACT ===================== -->
+<div class="section-label">Page 6 — Contact</div>
+
+<div class="header-bar">
+  <img src="./markview_text_icon.svg" alt="Markview" class="logo logo-light"><img src="./markview_text_icon_dark.svg" alt="Markview" class="logo logo-dark">
+  <nav>
+    <a href="#">HOME</a>
+    <a href="#">ABOUT</a>
+    <a href="#">PRIVACY</a>
+    <a href="#">CONTACT</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+</div>
+
+<div class="legal-page-section">
+  <h1 class="legal-page-title">Contact</h1>
+  <p class="legal-page-subtitle">서비스 관련 문의, 피드백, 제안 등을 보내주세요.</p>
+
+  <div class="legal-contact-card">
+    <div class="legal-contact-icon">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <a href="mailto:jeongyeonkim@hancom.com" class="legal-contact-email">jeongyeonkim@hancom.com</a>
+    <p class="legal-contact-desc">
+      서비스 이용 중 불편한 점이나 개선 아이디어가 있으시면<br>
+      언제든지 이메일로 연락해주세요.<br>
+      빠른 시일 내에 답변드리겠습니다.
+    </p>
+  </div>
+</div>
+
+<div class="legal-footer">
+  <div class="legal-footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <span class="legal-footer-brand">Markview — Markdown + View</span>
+</div>
+
 <script>
+  function copyMarkdown(btn) {
+    const textarea = btn.closest('.split-editor').querySelector('textarea');
+    if (!textarea) return;
+    navigator.clipboard.writeText(textarea.value).then(() => {
+      const original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
   function toggleTheme() {
     const html = document.documentElement;
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';

@@ -17,8 +17,6 @@
     font-size="128"
     font-weight="800"
     fill="url(#textFillDark)"
-    stroke="#0A122A"
-    stroke-width="2"
     letter-spacing="-3"
   >Markview</text>
 
