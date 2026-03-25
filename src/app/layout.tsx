@@ -16,6 +16,19 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <head>
         <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-THLNKBRLFH"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-THLNKBRLFH');`,
+          }}
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('markview-theme');if(t){document.documentElement.setAttribute('data-theme',t)}else if(window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}})()`,
           }}
