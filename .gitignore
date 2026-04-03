@@ -43,6 +43,9 @@ next-env.d.ts
 # local dev
 .local-db.json
 .omc/
+.open-next/
+extension/dist/
+extension/node_modules/
 
 # test files
 test.md

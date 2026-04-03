@@ -2,6 +2,17 @@ import { generateSlug, extractTitle, insertDocument } from "@/lib/db";
 
 const MAX_FILE_SIZE = 512 * 1024; // 512KB
 
+const corsHeaders = {
+  // TODO: Before Chrome Web Store publish, restrict to chrome-extension://<EXTENSION_ID>
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
@@ -47,11 +58,11 @@ export async function POST(request: Request) {
       }
     }
 
-    return Response.json({ slug, title });
+    return Response.json({ slug, title }, { headers: corsHeaders });
   } catch {
     return Response.json(
       { error: "업로드에 실패했습니다. 다시 시도해주세요." },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

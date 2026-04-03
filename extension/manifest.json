@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Markview - Markdown Viewer",
+  "version": "1.0.0",
+  "description": "마크다운을 아름답게 렌더링하는 사이드 패널 뷰어",
+  "permissions": ["sidePanel", "storage", "downloads", "scripting", "activeTab"],
+  "host_permissions": ["https://markview-4hy.pages.dev/*", "<all_urls>"],
+  "action": {
+    "default_title": "Markview 열기"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "sandbox": {
+    "pages": ["src/mermaid-sandbox.html"]
+  }
+}

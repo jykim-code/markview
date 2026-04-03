@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      const DARK_THEME = {
+        primaryColor: "#1a1a2e",
+        primaryTextColor: "#FFF7E6",
+        primaryBorderColor: "rgba(255,247,230,0.3)",
+        lineColor: "rgba(255,247,230,0.5)",
+        secondaryColor: "#16162a",
+        tertiaryColor: "#1e1e32",
+        background: "#0f0f1a",
+        mainBkg: "#1a1a2e",
+        nodeBorder: "rgba(255,247,230,0.3)",
+        clusterBkg: "#16162a",
+        titleColor: "#FFF7E6",
+        edgeLabelBackground: "#1a1a2e",
+      };
+
+      const LIGHT_THEME = {
+        primaryColor: "#FFF7E6",
+        primaryTextColor: "#0A122A",
+        primaryBorderColor: "#0A122A",
+        lineColor: "#0A122A",
+        secondaryColor: "#f0ead6",
+        tertiaryColor: "#e8e0cc",
+      };
+
+      window.addEventListener("message", async (event) => {
+        const { type, code, theme } = event.data || {};
+        if (type !== "render" || !code) return;
+
+        try {
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: "base",
+            themeVariables: theme === "dark" ? DARK_THEME : LIGHT_THEME,
+          });
+
+          const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
+          const { svg } = await mermaid.render(id, code);
+          event.source.postMessage({ type: "svg", svg }, "*");
+        } catch (err) {
+          event.source.postMessage(
+            {
+              type: "error",
+              message:
+                err instanceof Error
+                  ? err.message
+                  : "다이어그램을 렌더링할 수 없습니다.",
+            },
+            "*"
+          );
+        }
+      });
+
+      // Signal that sandbox is ready
+      window.parent.postMessage({ type: "ready" }, "*");
+    </script>
+  </head>
+  <body></body>
+</html>
