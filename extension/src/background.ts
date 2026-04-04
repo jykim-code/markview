@@ -1,8 +1,5 @@
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
-// Track download IDs that are .md files
-const mdDownloads = new Map<number, string>(); // id -> url
-
 // Fetch .md content using the active tab's context (has auth cookies)
 async function fetchViaTab(
   tabId: number,
@@ -28,94 +25,92 @@ async function fetchViaTab(
   }
 }
 
-// When filename becomes available or download completes
-chrome.downloads.onChanged.addListener(async (delta) => {
-  // Track when filename is determined to be .md
-  if (delta.filename?.current) {
-    const name = delta.filename.current;
-    if (name.endsWith(".md") || name.endsWith(".markdown")) {
-      // Get the download URL
-      const [item] = await chrome.downloads.search({ id: delta.id });
-      if (item) {
-        mdDownloads.set(delta.id, item.url);
+function isMdDownload(item: chrome.downloads.DownloadItem): boolean {
+  const url = item.url || "";
+  const pathname = new URL(url, "https://x").pathname;
+  return (
+    pathname.endsWith(".md") ||
+    pathname.endsWith(".markdown") ||
+    item.mime === "text/markdown" ||
+    item.mime === "text/x-markdown"
+  );
+}
+
+// Track IDs already handled to avoid double-processing
+const handledDownloads = new Set<number>();
+
+async function interceptMdDownload(id: number, url: string, finalUrl?: string) {
+  if (handledDownloads.has(id)) return;
+  handledDownloads.add(id);
+  // Prevent memory leak — clean up after 30s
+  setTimeout(() => handledDownloads.delete(id), 30_000);
+
+  // Cancel and erase the download
+  chrome.downloads.cancel(id, () => {
+    chrome.downloads.erase({ id });
+  });
+
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tab?.id) return;
+
+    // Open side panel and show loading state BEFORE fetching
+    chrome.sidePanel.open({ tabId: tab.id });
+    await new Promise((r) => setTimeout(r, 400));
+    chrome.runtime.sendMessage({ type: "md-loading" });
+
+    // Now fetch content
+    let content = await fetchViaTab(tab.id, url);
+
+    if (!content && finalUrl && finalUrl !== url) {
+      content = await fetchViaTab(tab.id, finalUrl);
+    }
+
+    if (!content) {
+      try {
+        const res = await fetch(url);
+        if (res.ok) content = await res.text();
+      } catch {
+        // ignore
       }
     }
-  }
 
-  // When a tracked .md download completes
-  if (delta.state?.current === "complete" && mdDownloads.has(delta.id)) {
-    const url = mdDownloads.get(delta.id)!;
-    mdDownloads.delete(delta.id);
-
-    try {
-      const [item] = await chrome.downloads.search({ id: delta.id });
-      if (!item) return;
-
-      const filename =
-        item.filename.split(/[/\\]/).pop() || "document.md";
-
-      // Get the active tab
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
+    if (content && content.length > 0) {
+      chrome.runtime.sendMessage({
+        type: "md-file-downloaded",
+        content,
       });
-      if (!tab?.id) return;
-
-      // Try to fetch content via the tab's context (has cookies)
-      let content = await fetchViaTab(tab.id, url);
-
-      // Fallback: try finalUrl
-      if (!content && item.finalUrl && item.finalUrl !== url) {
-        content = await fetchViaTab(tab.id, item.finalUrl);
-      }
-
-      // Fallback: try direct fetch from background
-      if (!content) {
-        try {
-          const res = await fetch(url);
-          if (res.ok) content = await res.text();
-        } catch {
-          // ignore
-        }
-      }
-
-      // Open side panel
-      chrome.sidePanel.open({ tabId: tab.id });
-
-      if (content && content.length > 0) {
-        // Send content to side panel
-        // Small delay to ensure side panel is open
-        setTimeout(() => {
-          chrome.runtime.sendMessage({
-            type: "md-file-downloaded",
-            content,
-            filename,
-          });
-        }, 500);
-      } else {
-        // Can't read — show drag hint
-        setTimeout(() => {
-          chrome.runtime.sendMessage({
-            type: "md-download-hint",
-            filename,
-          });
-        }, 500);
-      }
-    } catch {
-      // Silently fail
+    } else {
+      chrome.runtime.sendMessage({
+        type: "md-download-hint",
+      });
     }
+  } catch {
+    // Silently fail
+  }
+}
+
+// 1) Intercept at creation time if URL clearly ends with .md
+chrome.downloads.onCreated.addListener((item) => {
+  if (isMdDownload(item)) {
+    interceptMdDownload(item.id, item.url, item.finalUrl);
   }
 });
 
-// Also check at creation time for direct .md URLs
-chrome.downloads.onCreated.addListener((item) => {
-  const url = item.url || "";
-  if (
-    url.endsWith(".md") ||
-    url.endsWith(".markdown") ||
-    item.mime === "text/markdown" ||
-    item.mime === "text/x-markdown"
-  ) {
-    mdDownloads.set(item.id, url);
+// 2) Fallback: catch by filename when it becomes available
+chrome.downloads.onChanged.addListener(async (delta) => {
+  if (handledDownloads.has(delta.id)) return;
+
+  if (delta.filename?.current) {
+    const name = delta.filename.current;
+    if (name.endsWith(".md") || name.endsWith(".markdown")) {
+      const [item] = await chrome.downloads.search({ id: delta.id });
+      if (item) {
+        interceptMdDownload(delta.id, item.url, item.finalUrl);
+      }
+    }
   }
 });

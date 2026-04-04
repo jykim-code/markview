@@ -32,16 +32,22 @@ export function ExtensionApp() {
   const isEmpty = !content.trim();
 
   const [downloadHint, setDownloadHint] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Listen for .md downloads from background script
   useEffect(() => {
     function handleMessage(message: { type: string; content?: string; filename?: string }) {
-      if (message.type === "md-file-downloaded" && message.content) {
+      if (message.type === "md-loading") {
+        setLoading(true);
+        setDownloadHint("");
+      } else if (message.type === "md-file-downloaded" && message.content) {
         setContent(message.content);
         setMode("view");
+        setLoading(false);
         setDownloadHint("");
-      } else if (message.type === "md-download-hint" && message.filename) {
-        setDownloadHint(message.filename);
+      } else if (message.type === "md-download-hint") {
+        setLoading(false);
+        setDownloadHint("파일을 읽을 수 없습니다");
         setTimeout(() => setDownloadHint(""), 8000);
       }
     }
@@ -232,8 +238,8 @@ export function ExtensionApp() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold">{downloadHint} 다운로드 완료</p>
-            <p className="text-[10px] text-bg/70">다운로드된 파일을 여기로 드래그하면 바로 볼 수 있어요</p>
+            <p className="text-[11px] font-semibold">{downloadHint}</p>
+            <p className="text-[10px] text-bg/70">직접 .md 파일을 열거나 텍스트를 붙여넣어 보세요</p>
           </div>
           <button onClick={() => setDownloadHint("")} className="shrink-0 text-bg/50 hover:text-bg">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -272,7 +278,26 @@ export function ExtensionApp() {
 
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
-        {isEmpty && mode === "view" ? (
+        {loading ? (
+          /* Loading state — matches home screen design */
+          <div className="flex flex-1 flex-col overflow-y-auto">
+            <header
+              className="flex h-[50px] shrink-0 items-center justify-between px-4"
+              style={{ borderBottom: "1px solid var(--header-border)" }}
+            >
+              <img src="./markview_text_icon.svg" alt="Markview" className="h-5 logo-light" />
+              <img src="./markview_text_icon_dark.svg" alt="Markview" className="h-5 logo-dark" />
+              <ThemeToggle />
+            </header>
+            <section className="flex flex-1 flex-col items-center justify-center gap-4 bg-cream px-5">
+              <div className="h-7 w-7 animate-spin rounded-full border-[2.5px] border-navy/10 border-t-navy/50" />
+              <div className="text-center">
+                <p className="text-[13px] font-bold text-navy/70">렌더링 준비 중...</p>
+                <p className="mt-1.5 text-[11px] text-navy/40">파일 다운로드 없이 .md 파일을 렌더링합니다.</p>
+              </div>
+            </section>
+          </div>
+        ) : isEmpty && mode === "view" ? (
           /* Home screen — matches Markview main service design */
           <div
             className="flex flex-1 flex-col overflow-y-auto"
@@ -307,11 +332,11 @@ export function ExtensionApp() {
                   형태로.
                 </h1>
                 <p className="mt-4 text-[13px] font-medium leading-[1.8] text-navy/50">
-                  마크다운 텍스트를 붙여넣거나
+                  텍스트를 붙여넣거나
                   <br />
-                  .md 파일을 업로드하면
+                  .md 파일을 업로드하세요.
                   <br />
-                  바로 예쁘게 볼 수 있습니다.
+                  바로 예쁘게 렌더링해 드립니다.
                 </p>
               </div>
 
