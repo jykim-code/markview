@@ -1,6 +1,13 @@
-import { generateSlug, extractTitle, insertDocument } from "@/lib/db";
+import {
+  generateSlug,
+  extractTitle,
+  extractHtmlTitle,
+  insertDocument,
+  type DocType,
+} from "@/lib/db";
 
-const MAX_FILE_SIZE = 512 * 1024; // 512KB
+const MAX_SIZE_MD = 512 * 1024; // 512KB
+const MAX_SIZE_HTML = 2 * 1024 * 1024; // 2MB — AI-generated HTML embeds CSS/JS inline
 
 const corsHeaders = {
   // TODO: Before Chrome Web Store publish, restrict to chrome-extension://<EXTENSION_ID>
@@ -22,22 +29,29 @@ export async function POST(request: Request) {
       return Response.json({ error: "파일이 필요합니다." }, { status: 400 });
     }
 
-    if (!file.name.endsWith(".md")) {
+    const isMd = file.name.endsWith(".md");
+    const isHtml = file.name.endsWith(".html") || file.name.endsWith(".htm");
+
+    if (!isMd && !isHtml) {
       return Response.json(
-        { error: ".md 파일만 업로드할 수 있습니다." },
+        { error: ".md 또는 .html 파일만 업로드할 수 있습니다." },
         { status: 400 }
       );
     }
 
-    if (file.size > MAX_FILE_SIZE) {
+    const type: DocType = isHtml ? "html" : "md";
+    const maxSize = isHtml ? MAX_SIZE_HTML : MAX_SIZE_MD;
+
+    if (file.size > maxSize) {
+      const limitLabel = isHtml ? "2MB" : "512KB";
       return Response.json(
-        { error: "파일 크기는 512KB 이하여야 합니다." },
+        { error: `파일 크기는 ${limitLabel} 이하여야 합니다.` },
         { status: 400 }
       );
     }
 
     const content = await file.text();
-    const title = extractTitle(content);
+    const title = isHtml ? extractHtmlTitle(content) : extractTitle(content);
 
     // Retry slug generation up to 3 times on collision
     let slug = "";
@@ -45,7 +59,7 @@ export async function POST(request: Request) {
       slug = generateSlug();
       try {
         const id = crypto.randomUUID();
-        await insertDocument(id, slug, title, content);
+        await insertDocument(id, slug, title, content, type);
         break;
       } catch (err: unknown) {
         if (
@@ -58,7 +72,7 @@ export async function POST(request: Request) {
       }
     }
 
-    return Response.json({ slug, title }, { headers: corsHeaders });
+    return Response.json({ slug, title, type }, { headers: corsHeaders });
   } catch {
     return Response.json(
       { error: "업로드에 실패했습니다. 다시 시도해주세요." },

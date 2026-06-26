@@ -40,9 +40,9 @@ export default function Home() {
             형태로.
           </h1>
           <p className="mt-6 text-base font-medium leading-[1.8] text-navy/50">
-            AI가 만든 마크다운 파일을 업로드하면,
+            AI가 만든 마크다운·HTML 파일을 업로드하면,
             <br />
-            누구나 읽기 편한 웹 문서로 변환하고
+            누구나 읽기 편한 웹 문서로 보여주고
             <br />
             링크 하나로 바로 공유할 수 있습니다.
           </p>
@@ -63,7 +63,8 @@ export default function Home() {
         </div>
         <div className="mb-12 flex flex-wrap gap-2">
           {[
-            "GFM",
+            "Markdown (GFM)",
+            "Interactive HTML",
             "Syntax Highlighting",
             "Table of Contents",
             "LaTeX Math",

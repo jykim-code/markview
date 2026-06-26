@@ -14,13 +14,17 @@ export function UploadZone() {
     async (file: File) => {
       setError("");
 
-      if (!file.name.endsWith(".md")) {
-        setError(".md 파일만 업로드할 수 있습니다.");
+      const isMd = file.name.endsWith(".md");
+      const isHtml = file.name.endsWith(".html") || file.name.endsWith(".htm");
+
+      if (!isMd && !isHtml) {
+        setError(".md 또는 .html 파일만 업로드할 수 있습니다.");
         return;
       }
 
-      if (file.size > 512 * 1024) {
-        setError("파일 크기는 512KB 이하여야 합니다.");
+      const maxSize = isHtml ? 2 * 1024 * 1024 : 512 * 1024;
+      if (file.size > maxSize) {
+        setError(`파일 크기는 ${isHtml ? "2MB" : "512KB"} 이하여야 합니다.`);
         return;
       }
 
@@ -110,19 +114,19 @@ export function UploadZone() {
             onClick={handleClick}
             className="rounded-full bg-navy px-12 py-4 text-base font-bold text-bg transition-all hover:opacity-85 active:scale-[0.98]"
           >
-            .md 파일 업로드
+            파일 업로드
           </button>
           <p className="text-[15px] font-semibold text-navy/50">
             또는 파일 드래그 앤 드롭
           </p>
-          <p className="text-xs text-navy/35">.md · 최대 512KB</p>
+          <p className="text-xs text-navy/35">.md (최대 512KB) · .html (최대 2MB)</p>
         </>
       )}
 
       <input
         ref={inputRef}
         type="file"
-        accept=".md"
+        accept=".md,.html,.htm"
         onChange={handleChange}
         className="hidden"
       />
