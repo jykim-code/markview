@@ -41,32 +41,48 @@ export function HtmlExportButton({ content, title }: HtmlExportButtonProps) {
 
   function exportPDF() {
     setOpen(false);
-    // Open the raw HTML in a fresh window (same-origin, scripts run) and trigger
-    // the browser's print dialog so the user can "Save as PDF" — full fidelity,
-    // no headless browser required.
-    const win = window.open("", "_blank");
-    if (!win) {
-      alert("팝업이 차단되었습니다. 이 사이트의 팝업을 허용한 뒤 다시 시도해주세요.");
-      return;
-    }
-    win.document.open();
-    win.document.write(content);
-    win.document.close();
 
-    const triggerPrint = () => {
-      win.focus();
-      win.print();
-    };
-    // Print once the document (and its resources) have loaded; fall back after a
-    // short delay in case the load event already fired.
-    win.onload = triggerPrint;
+    // Print the HTML inside a hidden, sandboxed iframe rather than window.open +
+    // document.write. Two problems with the old approach produced blank PDFs:
+    //   1. `win.onload = print` clobbered the document's own onload handler, so
+    //      JS-rendered content never appeared.
+    //   2. AI artifacts commonly hide content with `opacity:0` and reveal it on
+    //      scroll (IntersectionObserver), which never fires while printing.
+    // Fixes: srcdoc loads the document normally (scripts/onload fire intact); we
+    // inject a print-only stylesheet that forces hidden/animated content visible;
+    // and an auto-print script that runs after load. The iframe keeps
+    // `allow-scripts` WITHOUT `allow-same-origin`, so origin isolation holds and
+    // `allow-modals` lets the sandboxed document open the print dialog itself.
+    const forceVisible =
+      '<style media="print">*,*::before,*::after{opacity:1!important;visibility:visible!important;animation:none!important;transition:none!important;}html,body{height:auto!important;overflow:visible!important;}</style>';
+    const autoPrint =
+      "<script>(function(){function p(){try{window.focus();window.print();}catch(e){}}" +
+      "if(document.readyState==='complete'){setTimeout(p,500);}" +
+      "else{window.addEventListener('load',function(){setTimeout(p,500);});}})();<\/script>";
+
+    let html = content;
+    html = /<\/head>/i.test(html)
+      ? html.replace(/<\/head>/i, forceVisible + "</head>")
+      : forceVisible + html;
+    html = /<\/body>/i.test(html)
+      ? html.replace(/<\/body>/i, autoPrint + "</body>")
+      : html + autoPrint;
+
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("sandbox", "allow-scripts allow-modals");
+    iframe.style.cssText =
+      "position:fixed;left:-10000px;top:0;width:1024px;height:1400px;border:0;";
+    iframe.srcdoc = html;
+    document.body.appendChild(iframe);
+
+    // Remove the iframe well after the print dialog has had time to open.
     setTimeout(() => {
       try {
-        triggerPrint();
+        document.body.removeChild(iframe);
       } catch {
-        /* window may have been closed by the user */
+        /* already removed */
       }
-    }, 800);
+    }, 120000);
   }
 
   return (

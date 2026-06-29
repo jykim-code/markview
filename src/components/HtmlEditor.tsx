@@ -1,9 +1,19 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { HtmlRenderer } from "./HtmlRenderer";
 import { HtmlExportButton } from "./HtmlExportButton";
 import { ThemeToggle } from "./ThemeToggle";
+
+// Load the CodeMirror editor only on the client, and only once Edit mode renders
+// it — keeps the bundle off the View/landing path.
+const CodeEditor = dynamic(() => import("./CodeEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex-1 p-5 text-sm text-navy/40">에디터 로딩 중…</div>
+  ),
+});
 
 type ViewMode = "view" | "edit";
 
@@ -131,15 +141,9 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
             <div className="flex shrink-0 items-center justify-between px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
               <span>HTML</span>
             </div>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-0 flex-1 resize-none bg-bg p-5 text-sm leading-relaxed text-navy outline-none transition-colors"
-              style={{
-                fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
-              }}
-              spellCheck={false}
-            />
+            <div className="min-h-0 flex-1 overflow-hidden bg-bg">
+              <CodeEditor value={content} onChange={setContent} />
+            </div>
           </div>
         )}
 
