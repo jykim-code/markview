@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
@@ -23,6 +24,8 @@ interface CodeEditorProps {
   onReady?: (controller: CodeController) => void;
   /** Fires on user scroll with the scroll position as a ratio (0..1). */
   onScrollRatio?: (ratio: number) => void;
+  /** Fires when a non-empty selection is made, with the selected text. */
+  onSelect?: (text: string) => void;
 }
 
 // Chrome follows Markview's theme tokens (light/dark); token colors come from
@@ -62,8 +65,28 @@ export default function CodeEditor({
   language = "html",
   onReady,
   onScrollRatio,
+  onSelect,
 }: CodeEditorProps) {
-  const langExt = language === "markdown" ? markdown() : html();
+  // Keep the latest onSelect in a ref so the (memoized) extension stays fresh
+  // without being rebuilt on every render.
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
+
+  const extensions = useMemo(
+    () => [
+      language === "markdown" ? markdown() : html(),
+      EditorView.lineWrapping,
+      EditorView.updateListener.of((u) => {
+        if (!u.selectionSet) return;
+        const r = u.state.selection.main;
+        if (r.empty) return;
+        onSelectRef.current?.(
+          u.state.doc.sliceString(r.from, Math.min(r.to, r.from + 200))
+        );
+      }),
+    ],
+    [language]
+  );
 
   function handleCreate(view: EditorView) {
     const controller: CodeController = {
@@ -111,7 +134,7 @@ export default function CodeEditor({
       height="100%"
       style={{ height: "100%" }}
       theme={markviewTheme}
-      extensions={[langExt, EditorView.lineWrapping]}
+      extensions={extensions}
       onCreateEditor={handleCreate}
       basicSetup={{
         lineNumbers: true,

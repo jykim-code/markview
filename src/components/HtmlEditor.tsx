@@ -84,6 +84,12 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
     [lock]
   );
 
+  // Code editor selection → scroll the preview iframe to the matching content.
+  const handleCodeSelect = useCallback((text: string) => {
+    if (modeRef.current !== "edit" || !text) return;
+    iframeRef.current?.contentWindow?.postMessage({ mv: "locate", text }, "*");
+  }, []);
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -212,6 +218,7 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
                 language="html"
                 onReady={(c) => (controllerRef.current = c)}
                 onScrollRatio={handleCodeScroll}
+                onSelect={handleCodeSelect}
               />
             </div>
           </div>

@@ -6,6 +6,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { TableOfContents } from "./TableOfContents";
 import { ExportButton } from "./ExportButton";
 import { ThemeToggle } from "./ThemeToggle";
+import { locateInElement } from "@/lib/editorSync";
 import type { CodeController } from "./CodeEditor";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), {
@@ -71,6 +72,17 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
     const text = sel ? sel.toString().trim() : "";
     if (text.length > 1) controllerRef.current?.selectText(text);
   }, []);
+
+  // Select text in the code → scroll the preview to the matching content.
+  const handleCodeSelect = useCallback(
+    (text: string) => {
+      const el = previewRef.current;
+      if (!el || !text) return;
+      lock(); // suppress the resulting preview-scroll from echoing back
+      locateInElement(el, text);
+    },
+    [lock]
+  );
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -224,6 +236,7 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
                 language="markdown"
                 onReady={(c) => (controllerRef.current = c)}
                 onScrollRatio={handleCodeScroll}
+                onSelect={handleCodeSelect}
               />
             </div>
           </div>
