@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { TableOfContents } from "./TableOfContents";
 import { ExportButton } from "./ExportButton";
 import { ThemeToggle } from "./ThemeToggle";
+import type { CodeController } from "./CodeEditor";
+
+const CodeEditor = dynamic(() => import("./CodeEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex-1 p-5 text-sm text-navy/40">에디터 로딩 중…</div>
+  ),
+});
 
 type ViewMode = "view" | "edit";
 
@@ -17,10 +26,51 @@ interface SplitEditorProps {
 export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
   const [content, setContent] = useState(initialContent);
   const [mode, setMode] = useState<ViewMode>("view");
+  const [syncScroll, setSyncScroll] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [mdCopied, setMdCopied] = useState(false);
+
+  const controllerRef = useRef<CodeController | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const lockRef = useRef(false);
+  const syncScrollRef = useRef(syncScroll);
+  syncScrollRef.current = syncScroll;
+
+  const lock = useCallback(() => {
+    lockRef.current = true;
+    setTimeout(() => {
+      lockRef.current = false;
+    }, 140);
+  }, []);
+
+  // Code editor scroll → preview div.
+  const handleCodeScroll = useCallback(
+    (ratio: number) => {
+      const el = previewRef.current;
+      if (!syncScrollRef.current || !el || lockRef.current) return;
+      lock();
+      el.scrollTop = ratio * (el.scrollHeight - el.clientHeight);
+    },
+    [lock]
+  );
+
+  // Preview div scroll → code editor.
+  const handlePreviewScroll = useCallback(() => {
+    const el = previewRef.current;
+    if (!syncScrollRef.current || !el || lockRef.current) return;
+    const max = el.scrollHeight - el.clientHeight;
+    lock();
+    controllerRef.current?.scrollToRatio(max > 0 ? el.scrollTop / max : 0);
+  }, [lock]);
+
+  // Select text in the preview → find and select it in the source.
+  const handlePreviewMouseUp = useCallback(() => {
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : "";
+    if (text.length > 1) controllerRef.current?.selectText(text);
+  }, []);
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -71,9 +121,9 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
   }, [content]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-screen flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
+      <header className="sticky top-0 z-10 flex h-[66px] shrink-0 items-center justify-between bg-bg px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
         <div className="flex items-center gap-4">
           <a href="/" className="transition-opacity hover:opacity-70">
             <img src="/markview_text_icon.svg" alt="Markview" className="h-7 logo-light" />
@@ -95,6 +145,23 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
               </button>
             ))}
           </div>
+          {/* Scroll sync toggle (edit mode only) */}
+          {mode === "edit" && (
+            <button
+              onClick={() => setSyncScroll((v) => !v)}
+              title="코드와 미리보기 스크롤을 함께 움직입니다"
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 font-montserrat text-xs font-semibold transition-all ${
+                syncScroll
+                  ? "bg-navy text-bg"
+                  : "bg-navy/[0.06] text-navy/50 hover:text-navy/70"
+              }`}
+            >
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+              스크롤 동기화
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -131,11 +198,11 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
       </header>
 
       {/* Body */}
-      <div className="flex flex-1">
+      <div className="flex min-h-0 flex-1">
         {/* Editor pane */}
         {mode === "edit" && (
           <div data-print-hide className="flex flex-1 flex-col" style={{ borderRight: '1px solid var(--editor-border)' }}>
-            <div className="flex items-center justify-between px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
+            <div className="flex shrink-0 items-center justify-between px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
               <span>Markdown</span>
               <button
                 onClick={handleCopyMd}
@@ -150,49 +217,52 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
                 )}
               </button>
             </div>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="flex-1 resize-none bg-bg p-5 text-sm leading-relaxed text-navy outline-none transition-colors"
-              style={{
-                fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
-              }}
-              spellCheck={false}
-            />
+            <div className="min-h-0 flex-1 overflow-hidden bg-bg">
+              <CodeEditor
+                value={content}
+                onChange={setContent}
+                language="markdown"
+                onReady={(c) => (controllerRef.current = c)}
+                onScrollRatio={handleCodeScroll}
+              />
+            </div>
           </div>
         )}
 
         {/* View/Preview pane */}
-        {(mode === "edit" || mode === "view") && (
-          <div className={`flex flex-col overflow-y-auto ${mode === "edit" ? "flex-1" : "flex-1"}`}>
-            {mode === "edit" && (
-              <div data-print-hide className="px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
-                Preview
-              </div>
-            )}
-            <div className="flex-1 bg-cream p-8">
-              {mode === "view" ? (
-                <div className="mx-auto max-w-[900px]">
-                  <h1 className="mb-8 text-[32px] font-bold tracking-tight text-navy md:text-[40px]" style={{ lineHeight: 1.3 }}>
-                    {title}
-                  </h1>
-                  <div className="flex gap-10">
-                    <article className="min-w-0 flex-1">
-                      <MarkdownRenderer content={content} />
-                    </article>
-                    <aside className="hidden w-[180px] shrink-0 lg:block">
-                      <div className="sticky top-[100px]">
-                        <TableOfContents content={content} />
-                      </div>
-                    </aside>
-                  </div>
-                </div>
-              ) : (
-                <MarkdownRenderer content={content} />
-              )}
+        <div
+          ref={previewRef}
+          onScroll={mode === "edit" ? handlePreviewScroll : undefined}
+          onMouseUp={mode === "edit" ? handlePreviewMouseUp : undefined}
+          className="flex flex-1 flex-col overflow-y-auto"
+        >
+          {mode === "edit" && (
+            <div data-print-hide className="shrink-0 px-5 py-3 text-[10px] font-bold uppercase tracking-[2px]" style={{ color: 'var(--label-text)', borderBottom: '1px solid var(--label-border)', background: 'var(--label-bg)' }}>
+              Preview
             </div>
+          )}
+          <div className="flex-1 bg-cream p-8">
+            {mode === "view" ? (
+              <div className="mx-auto max-w-[900px]">
+                <h1 className="mb-8 text-[32px] font-bold tracking-tight text-navy md:text-[40px]" style={{ lineHeight: 1.3 }}>
+                  {title}
+                </h1>
+                <div className="flex gap-10">
+                  <article className="min-w-0 flex-1">
+                    <MarkdownRenderer content={content} />
+                  </article>
+                  <aside className="hidden w-[180px] shrink-0 lg:block">
+                    <div className="sticky top-[100px]">
+                      <TableOfContents content={content} />
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            ) : (
+              <MarkdownRenderer content={content} />
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

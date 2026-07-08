@@ -1,9 +1,15 @@
 "use client";
 
+import type { Ref } from "react";
+import { injectBridge } from "@/lib/editorSync";
+
 interface HtmlRendererProps {
   html: string;
   className?: string;
   title?: string;
+  /** Inject the scroll/selection postMessage relay (edit-mode preview only). */
+  bridge?: boolean;
+  iframeRef?: Ref<HTMLIFrameElement>;
 }
 
 /**
@@ -16,12 +22,21 @@ interface HtmlRendererProps {
  * and cannot read Markview's cookies/storage or call same-origin APIs, which
  * neutralizes XSS from shared links. `allow-popups-to-escape-sandbox` lets links
  * with target=_blank open normally in a new tab. Top-navigation is not allowed,
- * so the embedded page can't hijack the parent window.
+ * so the embedded page can't hijack the parent window. When `bridge` is set, a
+ * postMessage relay is injected for scroll-sync / selection-linking — it works
+ * across the sandbox boundary without weakening the origin isolation above.
  */
-export function HtmlRenderer({ html, className, title }: HtmlRendererProps) {
+export function HtmlRenderer({
+  html,
+  className,
+  title,
+  bridge,
+  iframeRef,
+}: HtmlRendererProps) {
   return (
     <iframe
-      srcDoc={html}
+      ref={iframeRef}
+      srcDoc={bridge ? injectBridge(html) : html}
       title={title || "HTML preview"}
       sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals"
       referrerPolicy="no-referrer"

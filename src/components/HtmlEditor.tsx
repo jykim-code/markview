@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { HtmlRenderer } from "./HtmlRenderer";
 import { HtmlExportButton } from "./HtmlExportButton";
 import { ThemeToggle } from "./ThemeToggle";
+import type { CodeController } from "./CodeEditor";
 
 // Load the CodeMirror editor only on the client, and only once Edit mode renders
 // it — keeps the bundle off the View/landing path.
@@ -27,15 +28,61 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
   const [content, setContent] = useState(initialContent);
   const [preview, setPreview] = useState(initialContent);
   const [mode, setMode] = useState<ViewMode>("view");
+  const [syncScroll, setSyncScroll] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const controllerRef = useRef<CodeController | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const lockRef = useRef(false);
+  const syncScrollRef = useRef(syncScroll);
+  syncScrollRef.current = syncScroll;
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
 
   // Debounce code → live preview so the iframe doesn't reload on every keystroke.
   useEffect(() => {
     const id = setTimeout(() => setPreview(content), 400);
     return () => clearTimeout(id);
   }, [content]);
+
+  // Briefly ignore scroll events so a programmatic scroll doesn't echo back.
+  const lock = useCallback(() => {
+    lockRef.current = true;
+    setTimeout(() => {
+      lockRef.current = false;
+    }, 140);
+  }, []);
+
+  // Preview iframe → parent messages (scroll position + text selection).
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      if (e.source !== iframeRef.current?.contentWindow) return;
+      const m = e.data as { mv?: string; ratio?: number; text?: string };
+      if (!m || typeof m.mv !== "string") return;
+      if (m.mv === "scroll") {
+        if (!syncScrollRef.current || modeRef.current !== "edit" || lockRef.current) return;
+        lock();
+        controllerRef.current?.scrollToRatio(m.ratio ?? 0);
+      } else if (m.mv === "select") {
+        if (modeRef.current !== "edit" || !m.text) return;
+        controllerRef.current?.selectText(m.text);
+      }
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [lock]);
+
+  // Code editor scroll → preview iframe.
+  const handleCodeScroll = useCallback(
+    (ratio: number) => {
+      if (!syncScrollRef.current || modeRef.current !== "edit" || lockRef.current) return;
+      lock();
+      iframeRef.current?.contentWindow?.postMessage({ mv: "scrollTo", ratio }, "*");
+    },
+    [lock]
+  );
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -95,6 +142,23 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
               </button>
             ))}
           </div>
+          {/* Scroll sync toggle (edit mode only) */}
+          {mode === "edit" && (
+            <button
+              onClick={() => setSyncScroll((v) => !v)}
+              title="코드와 미리보기 스크롤을 함께 움직입니다"
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 font-montserrat text-xs font-semibold transition-all ${
+                syncScroll
+                  ? "bg-navy text-bg"
+                  : "bg-navy/[0.06] text-navy/50 hover:text-navy/70"
+              }`}
+            >
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+              스크롤 동기화
+            </button>
+          )}
           <span className="hidden rounded-full bg-navy/[0.06] px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider text-navy/50 sm:inline-block">
             HTML
           </span>
@@ -142,7 +206,13 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
               <span>HTML</span>
             </div>
             <div className="min-h-0 flex-1 overflow-hidden bg-bg">
-              <CodeEditor value={content} onChange={setContent} />
+              <CodeEditor
+                value={content}
+                onChange={setContent}
+                language="html"
+                onReady={(c) => (controllerRef.current = c)}
+                onScrollRatio={handleCodeScroll}
+              />
             </div>
           </div>
         )}
@@ -154,7 +224,13 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
               Preview
             </div>
           )}
-          <HtmlRenderer html={preview} title={title} className="min-h-0 w-full flex-1 border-0 bg-white" />
+          <HtmlRenderer
+            html={preview}
+            title={title}
+            bridge={mode === "edit"}
+            iframeRef={iframeRef}
+            className="min-h-0 w-full flex-1 border-0 bg-white"
+          />
         </div>
       </div>
     </div>
