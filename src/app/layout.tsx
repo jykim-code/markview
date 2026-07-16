@@ -59,6 +59,12 @@ gtag('config', 'G-THLNKBRLFH');`,
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8302055447823333"
           crossOrigin="anonymous"
         />
+        {/* Cloudflare Web Analytics */}
+        <script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "863e398bca034d0cb9103e00bab4b4f2"}'
+        />
       </head>
       <body className="font-montserrat antialiased">{children}</body>
     </html>

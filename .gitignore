@@ -44,6 +44,8 @@ next-env.d.ts
 .local-db.json
 .omc/
 .open-next/
+.wrangler/
+.claude/worktrees/
 extension/dist/
 extension/node_modules/
 
