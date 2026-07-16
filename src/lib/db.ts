@@ -3,11 +3,14 @@ import path from "path";
 
 const LOCAL_DB_PATH = path.join(process.cwd(), ".local-db.json");
 
+export type DocType = "md" | "html";
+
 interface Document {
   id: string;
   slug: string;
   title: string;
   content: string;
+  type: DocType;
   created_at: string;
 }
 
@@ -24,6 +27,19 @@ export function generateSlug(): string {
 export function extractTitle(markdown: string): string {
   const match = markdown.match(/^#\s+(.+)$/m);
   return match ? match[1].trim() : "Untitled";
+}
+
+export function extractHtmlTitle(html: string): string {
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  if (titleMatch && titleMatch[1].replace(/<[^>]+>/g, "").trim()) {
+    return titleMatch[1].replace(/<[^>]+>/g, "").trim();
+  }
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  if (h1Match) {
+    const text = h1Match[1].replace(/<[^>]+>/g, "").trim();
+    if (text) return text;
+  }
+  return "Untitled";
 }
 
 // --- Cloudflare D1 ---
@@ -65,15 +81,16 @@ export async function insertDocument(
   id: string,
   slug: string,
   title: string,
-  content: string
+  content: string,
+  type: DocType = "md"
 ): Promise<void> {
   if (isCloudflare()) {
     const db = getD1();
     await db
       .prepare(
-        "INSERT INTO documents (id, slug, title, content) VALUES (?, ?, ?, ?)"
+        "INSERT INTO documents (id, slug, title, content, type) VALUES (?, ?, ?, ?, ?)"
       )
-      .bind(id, slug, title, content)
+      .bind(id, slug, title, content, type)
       .run();
   } else {
     const localDB = await readLocalDB();
@@ -82,6 +99,7 @@ export async function insertDocument(
       slug,
       title,
       content,
+      type,
       created_at: new Date().toISOString(),
     });
     await writeLocalDB(localDB);
@@ -111,16 +129,21 @@ export async function updateDocument(
 
 export async function getDocumentBySlug(
   slug: string
-): Promise<{ title: string; content: string } | null> {
+): Promise<{ title: string; content: string; type: DocType } | null> {
   if (isCloudflare()) {
     const db = getD1();
-    return await db
-      .prepare("SELECT title, content FROM documents WHERE slug = ?")
+    const row = await db
+      .prepare("SELECT title, content, type FROM documents WHERE slug = ?")
       .bind(slug)
-      .first<{ title: string; content: string }>();
+      .first<{ title: string; content: string; type: string }>();
+    return row
+      ? { title: row.title, content: row.content, type: (row.type as DocType) || "md" }
+      : null;
   } else {
     const localDB = await readLocalDB();
     const doc = localDB.documents.find((d) => d.slug === slug);
-    return doc ? { title: doc.title, content: doc.content } : null;
+    return doc
+      ? { title: doc.title, content: doc.content, type: doc.type || "md" }
+      : null;
   }
 }

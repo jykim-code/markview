@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markview - 파일 URL 액세스 설정</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #1a1a1a;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #111;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 16px 16px 16px 52px;
+      position: relative;
+      margin-bottom: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      width: 28px;
+      height: 28px;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    code {
+      background: #e8e8e8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>파일 URL 액세스 권한이 필요합니다</h1>
+    <p class="subtitle">로컬 .md 파일을 Markview에서 열려면 확장 프로그램에 파일 URL 액세스 권한을 허용해야 합니다.</p>
+
+    <ol class="steps">
+      <li>주소창에 <code>chrome://extensions</code> (Edge: <code>edge://extensions</code>) 를 입력하세요</li>
+      <li><strong>Markview - Markdown Viewer</strong> 확장 프로그램의 <strong>세부정보</strong>를 클릭하세요</li>
+      <li><strong>파일 URL에 대한 액세스 허용</strong> 토글을 켜세요</li>
+      <li>이 탭을 닫고, .md 파일을 다시 열어보세요</li>
+    </ol>
+
+    <p style="margin-top: 24px; color: #666; font-size: 14px;">설정 후에도 이 페이지가 보인다면, 브라우저를 완전히 종료 후 다시 시작해보세요.</p>
+  </div>
+</body>
+</html>

@@ -1,5 +1,90 @@
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
+const MARKVIEW_BASE = "https://markview-4hy.pages.dev";
+
+// --- Local .md file:// URL detection & redirect to markview ---
+
+function isLocalMdFile(url: string): boolean {
+  if (!url.startsWith("file://")) return false;
+  const lower = url.toLowerCase();
+  return lower.endsWith(".md") || lower.endsWith(".markdown");
+}
+
+// Track tabs already being processed to avoid double-handling
+const handledTabs = new Set<number>();
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Only act when navigation completes to a file:// .md URL
+  if (changeInfo.status !== "complete") return;
+  const url = tab.url;
+  if (!url || !isLocalMdFile(url)) return;
+  if (handledTabs.has(tabId)) return;
+
+  handledTabs.add(tabId);
+  setTimeout(() => handledTabs.delete(tabId), 10_000);
+
+  try {
+    // Read file content from the tab's DOM (browser renders .md as plain text)
+    let results;
+    try {
+      results = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
+          // Chrome/Edge renders file:// text files as <pre> inside <body>
+          const pre = document.querySelector("pre");
+          if (pre) return pre.textContent || "";
+          return document.body?.innerText || "";
+        },
+      });
+    } catch {
+      // executeScript fails when file URL access is not granted
+      await chrome.tabs.update(tabId, {
+        url: chrome.runtime.getURL("file-access-guide.html"),
+      });
+      return;
+    }
+
+    const content = results?.[0]?.result as string | null;
+    if (!content || content.length === 0) return;
+
+    // Extract filename from URL for upload
+    const decodedUrl = decodeURIComponent(url);
+    const filename =
+      decodedUrl.split("/").pop()?.replace(/\?.*$/, "") || "document.md";
+
+    // Upload to markview API
+    const uploadName = filename.replace(/\.markdown$/i, ".md");
+    const formData = new FormData();
+    const file = new File([content], uploadName, {
+      type: "text/markdown",
+    });
+    formData.append("file", file);
+
+    const uploadRes = await fetch(`${MARKVIEW_BASE}/api/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!uploadRes.ok) {
+      await chrome.tabs.update(tabId, {
+        url: `${MARKVIEW_BASE}`,
+      });
+      return;
+    }
+
+    const { slug } = (await uploadRes.json()) as { slug: string };
+
+    // Redirect to markview viewer page
+    await chrome.tabs.update(tabId, {
+      url: `${MARKVIEW_BASE}/v/${slug}`,
+    });
+  } catch {
+    // Silently fail — don't break normal browsing
+  }
+});
+
+// --- Download interception (existing) ---
+
 // Fetch .md content using the active tab's context (has auth cookies)
 async function fetchViaTab(
   tabId: number,
