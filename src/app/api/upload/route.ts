@@ -6,8 +6,10 @@ import {
   type DocType,
 } from "@/lib/db";
 
-const MAX_SIZE_MD = 512 * 1024; // 512KB
-const MAX_SIZE_HTML = 2 * 1024 * 1024; // 2MB — AI-generated HTML embeds CSS/JS inline
+// Body content is stored in R2, so we're bounded by the Workers request body
+// limit (~100MB on the free plan) and practical browser rendering, not D1's
+// ~2MB per-row cap. 25MB is the generous ceiling for both MD and HTML.
+const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
 const corsHeaders = {
   // TODO: Before Chrome Web Store publish, restrict to chrome-extension://<EXTENSION_ID>
@@ -40,12 +42,10 @@ export async function POST(request: Request) {
     }
 
     const type: DocType = isHtml ? "html" : "md";
-    const maxSize = isHtml ? MAX_SIZE_HTML : MAX_SIZE_MD;
 
-    if (file.size > maxSize) {
-      const limitLabel = isHtml ? "2MB" : "512KB";
+    if (file.size > MAX_SIZE) {
       return Response.json(
-        { error: `파일 크기는 ${limitLabel} 이하여야 합니다.` },
+        { error: "파일 크기는 25MB 이하여야 합니다." },
         { status: 400 }
       );
     }

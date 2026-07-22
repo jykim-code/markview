@@ -7,3 +7,10 @@ compatibility_flags = ["nodejs_compat"]
 binding = "DB"
 database_name = "markview-db"
 database_id = "0959181b-696b-4eb0-8b0a-5d7ace2905cc"
+
+# Document body content is stored in R2 (D1 keeps only metadata) so a single
+# document can exceed D1's ~2MB per-row hard limit. Create the bucket with:
+#   wrangler r2 bucket create markview-content
+[[r2_buckets]]
+binding = "CONTENT"
+bucket_name = "markview-content"

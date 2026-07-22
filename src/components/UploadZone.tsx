@@ -22,9 +22,9 @@ export function UploadZone() {
         return;
       }
 
-      const maxSize = isHtml ? 2 * 1024 * 1024 : 512 * 1024;
+      const maxSize = 25 * 1024 * 1024; // 25MB (body stored in R2)
       if (file.size > maxSize) {
-        setError(`파일 크기는 ${isHtml ? "2MB" : "512KB"} 이하여야 합니다.`);
+        setError("파일 크기는 25MB 이하여야 합니다.");
         return;
       }
 
@@ -119,7 +119,7 @@ export function UploadZone() {
           <p className="text-[15px] font-semibold text-navy/50">
             또는 파일 드래그 앤 드롭
           </p>
-          <p className="text-xs text-navy/35">.md (최대 512KB) · .html (최대 2MB)</p>
+          <p className="text-xs text-navy/35">.md · .html (최대 25MB)</p>
         </>
       )}
 
