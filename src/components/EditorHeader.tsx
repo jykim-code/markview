@@ -162,15 +162,21 @@ export function EditorHeader({
         </button>
         {menuOpen && (
           <div
-            className="absolute right-0 top-[calc(100%+8px)] z-20 flex flex-col items-stretch gap-2 rounded-2xl bg-bg p-3 shadow-[var(--shadow-card)]"
+            className="absolute right-0 top-[calc(100%+8px)] z-20 flex w-max flex-col items-stretch gap-2 rounded-2xl bg-bg p-3 shadow-[var(--shadow-card)]"
             style={{ border: "1px solid var(--header-border)" }}
-            onClick={() => setMenuOpen(false)}
           >
-            {mode === "edit" && scrollSyncButton}
-            {saveButton}
+            {/*
+              Close the menu on tap for the simple actions, but NOT around the
+              Export control — Export opens its own nested dropdown, so closing
+              the menu on its click would unmount that dropdown before it shows.
+            */}
+            {mode === "edit" && (
+              <div onClick={() => setMenuOpen(false)}>{scrollSyncButton}</div>
+            )}
+            <div onClick={() => setMenuOpen(false)}>{saveButton}</div>
             {exportButton}
-            {shareButton}
-            <div className="flex justify-center">
+            <div onClick={() => setMenuOpen(false)}>{shareButton}</div>
+            <div className="flex justify-center" onClick={() => setMenuOpen(false)}>
               <ThemeToggle />
             </div>
           </div>
