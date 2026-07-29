@@ -42,12 +42,20 @@ next-env.d.ts
 
 # local dev
 .local-db.json
-.omc/
 .open-next/
 .wrangler/
 .claude/worktrees/
 extension/dist/
 extension/node_modules/
+
+# OMC: keep planning/spec docs, drop ephemeral session state
+.omc/*
+!.omc/plans/
+!.omc/specs/
+!.omc/skills/
+!.omc/prd.json
+!.omc/project-memory.json
+extension/.omc/
 
 # test files
 test.md

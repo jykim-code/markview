@@ -1,0 +1,30 @@
+{
+  "title": "로컬 .md 파일 file:// URL 자동 렌더링",
+  "stories": [
+    {
+      "id": "US-001",
+      "title": "file:// URL 감지 및 markview 업로드/리디렉션",
+      "priority": 1,
+      "passes": true,
+      "acceptanceCriteria": [
+        "background.ts에 chrome.tabs.onUpdated 리스너가 file:// 스킴 + .md/.markdown 확장자를 감지",
+        "감지된 파일을 fetch()로 읽어서 markview API(/api/upload)에 FormData로 업로드",
+        "업로드 성공 시 chrome.tabs.update로 https://markview-4hy.pages.dev/v/{slug}로 리디렉션",
+        "file:// URL이 아닌 일반 URL(http/https)에는 영향 없음",
+        ".md/.markdown이 아닌 file:// URL은 무시",
+        "TypeScript 컴파일 에러 없음"
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "파일 URL 액세스 권한 미설정 시 안내",
+      "priority": 2,
+      "passes": true,
+      "acceptanceCriteria": [
+        "file:// URL에서 fetch 실패 시(권한 없음) 사용자에게 안내 메시지/페이지 표시",
+        "안내 내용에 '파일 URL에 대한 액세스 허용' 설정 방법 포함",
+        "안내가 새 탭이나 현재 탭에서 보여짐 (raw markdown 텍스트 대신)"
+      ]
+    }
+  ]
+}

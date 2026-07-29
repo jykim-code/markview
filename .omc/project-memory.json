@@ -1,0 +1,223 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1785116831213,
+  "projectRoot": "C:\\Users\\jykim\\source\\mdViewing\\markview",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.1.7",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.3",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.3",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": null,
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build --webpack",
+      "start": "next start",
+      "lint": "eslint",
+      "pages:build": "next build --webpack && npx @opennextjs/cloudflare build --skipBuild && node scripts/prepare-pages.mjs"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 6,
+      "lastAccessed": 1785116830075,
+      "keyFiles": [
+        "extension_개발산출물.md",
+        "ROADMAP.md",
+        "SPEC.md",
+        "V1_기획안.md",
+        "개발_산출물.md"
+      ]
+    },
+    "extension": {
+      "path": "extension",
+      "purpose": null,
+      "fileCount": 7,
+      "lastAccessed": 1785116830077,
+      "keyFiles": [
+        "manifest.json",
+        "package-lock.json",
+        "package.json",
+        "sidepanel.html",
+        "tsconfig.json"
+      ]
+    },
+    "migrations": {
+      "path": "migrations",
+      "purpose": "Database migrations",
+      "fileCount": 2,
+      "lastAccessed": 1785116830106,
+      "keyFiles": [
+        "0001_init.sql",
+        "0002_add_type.sql"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 11,
+      "lastAccessed": 1785116830107,
+      "keyFiles": [
+        "ads.txt",
+        "design-preview.html",
+        "file.svg",
+        "globe.svg",
+        "M.svg"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1785116830108,
+      "keyFiles": [
+        "prepare-pages.mjs"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1785116830109,
+      "keyFiles": []
+    },
+    "extension\\dist": {
+      "path": "extension\\dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 8,
+      "lastAccessed": 1785116830112,
+      "keyFiles": [
+        "background.js",
+        "file-access-guide.html",
+        "manifest.json"
+      ]
+    },
+    "extension\\node_modules": {
+      "path": "extension\\node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 1,
+      "lastAccessed": 1785116830115,
+      "keyFiles": []
+    },
+    "extension\\public": {
+      "path": "extension\\public",
+      "purpose": "Public files",
+      "fileCount": 3,
+      "lastAccessed": 1785116830116,
+      "keyFiles": [
+        "file-access-guide.html",
+        "markview_text_icon.svg",
+        "markview_text_icon_dark.svg"
+      ]
+    },
+    "extension\\src": {
+      "path": "extension\\src",
+      "purpose": "Source code",
+      "fileCount": 3,
+      "lastAccessed": 1785116830118,
+      "keyFiles": [
+        "background.ts",
+        "main.tsx",
+        "mermaid-sandbox.html"
+      ]
+    },
+    "src\\app": {
+      "path": "src\\app",
+      "purpose": "Application code",
+      "fileCount": 4,
+      "lastAccessed": 1785116830123,
+      "keyFiles": [
+        "globals.css",
+        "layout.tsx",
+        "not-found.tsx"
+      ]
+    },
+    "src\\components": {
+      "path": "src\\components",
+      "purpose": "UI components",
+      "fileCount": 14,
+      "lastAccessed": 1785116830124,
+      "keyFiles": [
+        "CodeEditor.tsx",
+        "EditorHeader.tsx",
+        "ExportButton.tsx"
+      ]
+    },
+    "src\\lib": {
+      "path": "src\\lib",
+      "purpose": "Library code",
+      "fileCount": 2,
+      "lastAccessed": 1785116830125,
+      "keyFiles": [
+        "db.ts",
+        "editorSync.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/components/MarkdownRenderer.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785117045264,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
