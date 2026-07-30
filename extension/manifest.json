@@ -3,10 +3,24 @@
   "name": "Markview - Markdown Viewer",
   "version": "1.0.0",
   "description": "마크다운을 아름답게 렌더링하는 사이드 패널 뷰어",
+  "minimum_chrome_version": "116",
   "permissions": ["sidePanel", "storage", "downloads", "scripting", "activeTab", "tabs"],
-  "host_permissions": ["https://markview-4hy.pages.dev/*", "<all_urls>"],
+  "host_permissions": ["https://markview-4hy.pages.dev/*"],
+  "optional_host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "action": {
-    "default_title": "Markview 열기"
+    "default_title": "Markview 열기",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "side_panel": {
     "default_path": "sidepanel.html"

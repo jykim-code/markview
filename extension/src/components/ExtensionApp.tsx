@@ -4,6 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { ExportButton } from "./ExportButton";
 import { ShareButton } from "./ShareButton";
 import { FileOpenButton } from "./FileOpenButton";
+import { SiteAccessToggle } from "./SiteAccessToggle";
 
 type ViewMode = "edit" | "view";
 
@@ -352,6 +353,8 @@ export function ExtensionApp() {
                   </p>
                 </div>
               </div>
+
+              <SiteAccessToggle />
 
               <button
                 onClick={() => {
