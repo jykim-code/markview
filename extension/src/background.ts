@@ -15,6 +15,37 @@ function isLocalMdFile(url: string): boolean {
 // Track tabs already being processed to avoid double-handling
 const handledTabs = new Set<number>();
 
+/** Ownership tokens for documents this extension uploaded. */
+const UPLOADS_KEY = "markview:uploads";
+const MAX_TRACKED_UPLOADS = 200;
+
+interface TrackedUpload {
+  slug: string;
+  ownerToken: string;
+  title: string;
+  uploadedAt: string;
+}
+
+async function recordUpload(entry: {
+  slug: string;
+  ownerToken: string;
+  title: string;
+}): Promise<void> {
+  try {
+    const stored = await chrome.storage.local.get(UPLOADS_KEY);
+    const existing: TrackedUpload[] = Array.isArray(stored?.[UPLOADS_KEY])
+      ? stored[UPLOADS_KEY]
+      : [];
+    const next: TrackedUpload[] = [
+      { ...entry, uploadedAt: new Date().toISOString() },
+      ...existing.filter((u) => u?.slug !== entry.slug),
+    ].slice(0, MAX_TRACKED_UPLOADS);
+    await chrome.storage.local.set({ [UPLOADS_KEY]: next });
+  } catch {
+    // Storage is best effort — never block the redirect over bookkeeping.
+  }
+}
+
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // Only act when navigation completes to a file:// .md URL
   if (changeInfo.status !== "complete") return;
@@ -74,7 +105,19 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       return;
     }
 
-    const { slug } = (await uploadRes.json()) as { slug: string };
+    const { slug, owner_token, title } = (await uploadRes.json()) as {
+      slug: string;
+      owner_token?: string;
+      title?: string;
+    };
+
+    // Keep the ownership token. Extension storage is a separate origin from the
+    // web app's localStorage, so this list doesn't merge into "내 문서" yet —
+    // but without the token these uploads could never be claimed into an
+    // account or deleted, and the token is only ever returned right here.
+    if (owner_token) {
+      await recordUpload({ slug, ownerToken: owner_token, title: title || uploadName });
+    }
 
     // Redirect to markview viewer page
     await chrome.tabs.update(tabId, {
