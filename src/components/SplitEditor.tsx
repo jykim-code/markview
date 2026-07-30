@@ -8,6 +8,7 @@ import { ExportButton } from "./ExportButton";
 import { EditorHeader } from "./EditorHeader";
 import { locateInElement } from "@/lib/editorSync";
 import { useRevert } from "@/lib/useRevert";
+import { useToast } from "./Toast";
 import type { CodeController } from "./CodeEditor";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), {
@@ -85,25 +86,34 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
     [lock]
   );
 
+  const toast = useToast();
   const { available: revertAvailable, reverting, revert, refresh: refreshRevert } =
     useRevert(slug, setContent);
 
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
-      await fetch(`/api/documents/${slug}`, {
+      const res = await fetch(`/api/documents/${slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
+      // Without this check a failed save still flashed "저장 완료!", leaving the
+      // author believing their edit was persisted.
+      if (!res.ok) {
+        toast.error("저장에 실패했습니다");
+        return;
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       // The save just produced a backup, unless the body exceeded the size cap.
       void refreshRevert();
+    } catch {
+      toast.error("저장에 실패했습니다");
     } finally {
       setSaving(false);
     }
-  }, [slug, content, refreshRevert]);
+  }, [slug, content, refreshRevert, toast]);
 
   const handleShare = useCallback(async () => {
     const shareUrl = `${window.location.origin}/v/${slug}`;

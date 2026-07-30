@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useToast } from "@/components/Toast";
 
 /**
  * One-step revert for the MD and HTML editors.
@@ -9,10 +10,15 @@ import { useState, useEffect, useCallback } from "react";
  * a document gets wrecked — see docs/ROADMAP.md §2. Availability is fetched
  * rather than assumed: bodies over the size cap never get a backup, so a saved
  * document does not always have something to revert to.
+ *
+ * There is deliberately no confirmation step. Reverting swaps the two versions,
+ * so pressing it again undoes it — asking first would be friction for an action
+ * that can't lose anything.
  */
 export function useRevert(slug: string, onRestored: (content: string) => void) {
   const [available, setAvailable] = useState(false);
   const [reverting, setReverting] = useState(false);
+  const toast = useToast();
 
   const refresh = useCallback(async () => {
     try {
@@ -30,13 +36,6 @@ export function useRevert(slug: string, onRestored: (content: string) => void) {
   }, [refresh]);
 
   const revert = useCallback(async () => {
-    if (
-      !window.confirm(
-        "마지막 저장 직전 내용으로 되돌릴까요?\n지금 내용은 되돌리기 슬롯으로 옮겨지므로, 한 번 더 누르면 원래대로 돌아옵니다."
-      )
-    ) {
-      return;
-    }
     setReverting(true);
     try {
       const res = await fetch(`/api/documents/${slug}/revert`, {
@@ -44,16 +43,20 @@ export function useRevert(slug: string, onRestored: (content: string) => void) {
       });
       if (!res.ok) {
         setAvailable(false);
+        toast.error("되돌릴 버전이 없습니다");
         return;
       }
       const data = (await res.json()) as { content?: string };
-      if (typeof data.content === "string") onRestored(data.content);
+      if (typeof data.content === "string") {
+        onRestored(data.content);
+        toast.success("직전 내용으로 되돌렸습니다");
+      }
     } catch {
-      // Network failure — nothing changed server-side, so keep the control.
+      toast.error("되돌리기에 실패했습니다");
     } finally {
       setReverting(false);
     }
-  }, [slug, onRestored]);
+  }, [slug, onRestored, toast]);
 
   return { available, reverting, revert, refresh };
 }

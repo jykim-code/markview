@@ -143,7 +143,7 @@ export function EditorHeader({
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 0 1 2-2h3l2 2h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
       </svg>
-      내 문서
+      My Docs
     </Link>
   );
 
@@ -231,13 +231,17 @@ export function EditorHeader({
 
     {/*
       Editing is open by design, which is not obvious from the UI — someone who
-      received the link can save over this document, and so can you over theirs.
-      Say so where the save button is, not buried in a help page.
+      received the link can save over this document. Say so where the save button
+      is, not buried in a help page.
+
+      The lock is not built yet (ROADMAP P1), so it reads as planned rather than
+      available; promising it now would send people hunting for a login that
+      isn't there.
     */}
     {mode === "edit" && (
       <div className="shrink-0 bg-cream px-4 py-2 text-[11px] leading-snug text-navy/50 md:px-8">
-        이 링크를 가진 누구나 이 문서를 편집할 수 있습니다.
-        {revertAvailable && " 잘못된 저장은 «되돌리기»로 직전 내용으로 복구할 수 있습니다."}
+        공유 링크를 가진 누구나 편집할 수 있습니다.
+        <span className="text-navy/35"> 편집 잠금은 로그인 계정에서 지원 예정입니다.</span>
       </div>
     )}
     </>

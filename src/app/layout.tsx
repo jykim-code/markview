@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: "Markview — 마크다운을 사람이 읽기 좋은 형태로",
@@ -66,7 +67,9 @@ gtag('config', 'G-THLNKBRLFH');`,
           data-cf-beacon='{"token": "863e398bca034d0cb9103e00bab4b4f2"}'
         />
       </head>
-      <body className="font-montserrat antialiased">{children}</body>
+      <body className="font-montserrat antialiased">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

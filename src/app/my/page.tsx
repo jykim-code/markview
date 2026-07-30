@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { useToast } from "@/components/Toast";
 import { readMyDocs, syncMyDocs, removeMyDoc, type MyDoc } from "@/lib/myDocs";
 
 /**
@@ -15,8 +17,9 @@ import { readMyDocs, syncMyDocs, removeMyDoc, type MyDoc } from "@/lib/myDocs";
 export default function MyDocsPage() {
   const [docs, setDocs] = useState<MyDoc[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<MyDoc | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     // Paint the local list immediately, then drop entries the server no longer
@@ -35,32 +38,29 @@ export default function MyDocsPage() {
     };
   }, []);
 
-  const handleDelete = useCallback(async (doc: MyDoc) => {
-    if (!window.confirm(`"${doc.title}"을 삭제할까요? 되돌릴 수 없습니다.`)) {
-      return;
-    }
-    setError("");
-    setDeleting(doc.slug);
+  const handleDelete = useCallback(async () => {
+    const doc = pendingDelete;
+    if (!doc) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/documents/${doc.slug}`, {
         method: "DELETE",
         headers: { "X-Owner-Token": doc.ownerToken },
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as {
-          error?: string;
-        };
-        setError(data.error || "삭제에 실패했습니다.");
+        toast.error("삭제 권한이 없습니다");
         return;
       }
       removeMyDoc(doc.slug);
       setDocs((prev) => prev.filter((d) => d.slug !== doc.slug));
+      toast.success("삭제했습니다");
     } catch {
-      setError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+      toast.error("네트워크 오류가 발생했습니다");
     } finally {
-      setDeleting(null);
+      setDeleting(false);
+      setPendingDelete(null);
     }
-  }, []);
+  }, [pendingDelete, toast]);
 
   return (
     <main className="flex min-h-screen flex-col bg-bg">
@@ -85,23 +85,13 @@ export default function MyDocsPage() {
           className="font-montserrat text-navy"
           style={{ fontSize: "clamp(26px, 5vw, 36px)", fontWeight: 800, letterSpacing: "-1px" }}
         >
-          내가 올린 문서
+          My Docs
         </h1>
 
-        <p className="mt-3 text-sm leading-relaxed text-navy/50">
-          업로드한 문서의 링크를 다시 찾을 수 있도록 기록해 둔 목록입니다.
+        <p className="mt-3 text-[13px] leading-relaxed text-navy/50">
+          <strong className="font-semibold text-navy">이 브라우저에만</strong> 저장되는
+          목록입니다. 기기 간 동기화는 로그인 계정에서 지원 예정입니다.
         </p>
-
-        <div className="mt-5 rounded-xl bg-cream px-4 py-3 text-[13px] leading-relaxed text-navy/60">
-          이 목록은 <strong className="font-semibold text-navy">이 브라우저에만</strong> 저장됩니다.
-          다른 기기나 브라우저에서는 보이지 않고, 브라우저 데이터를 지우면 함께 사라집니다.
-        </div>
-
-        {error && (
-          <div className="mt-4 rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
-            {error}
-          </div>
-        )}
 
         {loading && docs.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16">
@@ -111,7 +101,7 @@ export default function MyDocsPage() {
         ) : docs.length === 0 ? (
           <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl bg-bg px-6 py-16 text-center shadow-[var(--shadow-card)]">
             <p className="text-base font-semibold text-navy/60">
-              아직 이 브라우저에서 올린 문서가 없습니다.
+              올린 문서가 없습니다.
             </p>
             <Link
               href="/"
@@ -144,11 +134,10 @@ export default function MyDocsPage() {
                 </div>
 
                 <button
-                  onClick={() => handleDelete(doc)}
-                  disabled={deleting === doc.slug}
-                  className="shrink-0 rounded-full border border-navy/15 px-3 py-1.5 text-xs font-semibold text-navy/60 transition-all hover:border-red-400/50 hover:text-red-400 disabled:opacity-40"
+                  onClick={() => setPendingDelete(doc)}
+                  className="shrink-0 rounded-full border border-navy/15 px-3 py-1.5 text-xs font-semibold text-navy/60 transition-all hover:border-red-400/50 hover:text-red-400"
                 >
-                  {deleting === doc.slug ? "삭제 중..." : "삭제"}
+                  삭제
                 </button>
               </li>
             ))}
@@ -166,6 +155,17 @@ export default function MyDocsPage() {
           Markview — Markdown + View
         </span>
       </footer>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        title="문서를 삭제할까요?"
+        description={`«${pendingDelete?.title ?? ""}» — 되돌릴 수 없습니다.`}
+        confirmLabel="삭제"
+        destructive
+        busy={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </main>
   );
 }
