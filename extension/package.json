@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && cp manifest.json dist/ && node -e \"const fs=require('fs');['dist/sidepanel.html','dist/src/mermaid-sandbox.html'].forEach(f=>{if(fs.existsSync(f)){fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace(/ crossorigin/g,'').replace(/ type=\\\"module\\\"/g,' defer'))}})\"",
+    "build": "tsc && vite build && cp manifest.json dist/ && node -e \"const fs=require('fs');['dist/sidepanel.html','dist/src/mermaid-sandbox.html'].forEach(f=>{if(fs.existsSync(f)){fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace(/ crossorigin/g,'').replace(/ type=\\\"module\\\"/g,' defer'))}})\" && node scripts/check-icons.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:icons": "node scripts/check-icons.mjs",
+    "verify:store": "npm run build && npm test && node scripts/check-icons.mjs --strict"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
