@@ -55,6 +55,13 @@ body {
 [data-theme="dark"] .logo-light { display: none; }
 [data-theme="dark"] .logo-dark { display: block; }
 
+/* Theme toggle icon swap — driven by data-theme rather than React state, so the
+   button never re-renders just to change which icon is showing. */
+.theme-icon-moon { display: block; }
+.theme-icon-sun { display: none; }
+[data-theme="dark"] .theme-icon-moon { display: none; }
+[data-theme="dark"] .theme-icon-sun { display: block; }
+
 /* Prose customization for markdown rendering */
 .prose {
   --tw-prose-body: var(--color-navy);
