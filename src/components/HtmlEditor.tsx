@@ -32,8 +32,6 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
   const [mode, setMode] = useState<ViewMode>("view");
   const [syncScroll, setSyncScroll] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const controllerRef = useRef<CodeController | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -110,14 +108,13 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      // Without this check a failed save still flashed "저장 완료!", leaving the
-      // author believing their edit was persisted.
+      // The response status has to be checked: a failed save used to report
+      // success anyway, leaving the author believing their edit was persisted.
       if (!res.ok) {
         toast.error("저장에 실패했습니다");
         return;
       }
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      toast.success("저장했습니다");
       // The save just produced a backup, unless the body exceeded the size cap.
       void refreshRevert();
     } catch {
@@ -131,19 +128,18 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
     const shareUrl = `${window.location.origin}/v/${slug}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
+      // Clipboard API needs a secure context and permission; the hidden-input
+      // trick keeps copying working without it.
       const input = document.createElement("input");
       input.value = shareUrl;
       document.body.appendChild(input);
       input.select();
       document.execCommand("copy");
       document.body.removeChild(input);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
-  }, [slug]);
+    toast.success("공유 링크를 복사했습니다");
+  }, [slug, toast]);
 
   return (
     <div className="flex h-screen flex-col overflow-x-hidden">
@@ -154,11 +150,9 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
         onToggleSyncScroll={() => setSyncScroll((v) => !v)}
         onSave={handleSave}
         saving={saving}
-        saved={saved}
         saveLabel=".html 저장"
         exportButton={<HtmlExportButton content={content} title={title} />}
         onShare={handleShare}
-        copied={copied}
         onRevert={revert}
         revertAvailable={revertAvailable}
         reverting={reverting}
