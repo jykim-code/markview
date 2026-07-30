@@ -59,12 +59,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         // aria-live so the message reaches screen readers, which never saw the
         // visual toast; pointer-events-none keeps the stack from eating clicks.
         aria-live="polite"
-        className="pointer-events-none fixed bottom-6 left-1/2 z-[100] flex -translate-x-1/2 flex-col items-center gap-2 px-4"
+        // Sits just below the 66px header every page shares, so a toast never
+        // covers the logo, mode toggle, or mobile hamburger — the pill takes
+        // pointer events, and blocking a control for 2.6s is worse than the
+        // brief overlap with the edit-mode notice strip.
+        className="pointer-events-none fixed left-1/2 top-[78px] z-[100] flex -translate-x-1/2 flex-col items-center gap-2 px-4"
       >
         {toasts.map((t) => (
           <div
             key={t.id}
-            className="animate-toast-in pointer-events-auto flex items-center gap-2.5 rounded-full bg-navy px-5 py-3 text-[13px] font-semibold text-bg shadow-[var(--shadow-card)]"
+            className="animate-toast-drop pointer-events-auto flex items-center gap-2.5 rounded-full bg-navy px-5 py-3 text-[13px] font-semibold text-bg shadow-[var(--shadow-card)]"
           >
             {t.kind === "success" ? (
               <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

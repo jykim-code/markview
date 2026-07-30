@@ -92,6 +92,17 @@ body {
   animation: toast-in 0.18s ease-out both;
 }
 
+/* Toasts sit at the top, so they enter downward — moving away from the edge
+   they came from. The dialog keeps toast-in, which rises into a centred box. */
+@keyframes toast-drop {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-toast-drop {
+  animation: toast-drop 0.18s ease-out both;
+}
+
 @keyframes overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
