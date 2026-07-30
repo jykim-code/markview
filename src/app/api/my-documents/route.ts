@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     if (!Array.isArray(body.docs)) {
       return Response.json(
-        { error: "docs 배열이 필요합니다." },
+        { error: "docs 배열이 필요합니다" },
         { status: 400 }
       );
     }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     return Response.json({ docs: await getOwnedDocuments(entries) });
   } catch {
     return Response.json(
-      { error: "문서 목록을 불러오지 못했습니다." },
+      { error: "문서 목록을 불러오지 못했습니다" },
       { status: 500 }
     );
   }

@@ -42,20 +42,32 @@ export default function MyDocsPage() {
     const doc = pendingDelete;
     if (!doc) return;
     setDeleting(true);
+    let res: Response;
     try {
-      const res = await fetch(`/api/documents/${doc.slug}`, {
+      res = await fetch(`/api/documents/${doc.slug}`, {
         method: "DELETE",
         headers: { "X-Owner-Token": doc.ownerToken },
       });
-      if (!res.ok) {
+    } catch {
+      // Request never left the browser — the document is untouched.
+      toast.error("네트워크 연결을 확인해주세요");
+      setDeleting(false);
+      setPendingDelete(null);
+      return;
+    }
+
+    try {
+      if (res.status === 403) {
         toast.error("삭제 권한이 없습니다");
+        return;
+      }
+      if (!res.ok) {
+        toast.error("삭제에 실패했습니다");
         return;
       }
       removeMyDoc(doc.slug);
       setDocs((prev) => prev.filter((d) => d.slug !== doc.slug));
       toast.success("삭제했습니다");
-    } catch {
-      toast.error("네트워크 오류가 발생했습니다");
     } finally {
       setDeleting(false);
       setPendingDelete(null);
@@ -89,7 +101,7 @@ export default function MyDocsPage() {
         </h1>
 
         <p className="mt-3 text-[13px] leading-relaxed text-navy/50">
-          <strong className="font-semibold text-navy">이 브라우저에만</strong> 저장되는
+          <strong className="font-semibold text-navy">현재 브라우저에만</strong> 저장되는
           목록입니다. 기기 간 동기화는 로그인 계정에서 지원 예정입니다.
         </p>
 
@@ -101,7 +113,7 @@ export default function MyDocsPage() {
         ) : docs.length === 0 ? (
           <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl bg-bg px-6 py-16 text-center shadow-[var(--shadow-card)]">
             <p className="text-base font-semibold text-navy/60">
-              올린 문서가 없습니다.
+              업로드한 문서가 없습니다.
             </p>
             <Link
               href="/"

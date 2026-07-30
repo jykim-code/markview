@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      return Response.json({ error: "파일이 필요합니다." }, { status: 400 });
+      return Response.json({ error: "파일이 필요합니다" }, { status: 400 });
     }
 
     const isMd = file.name.endsWith(".md");
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
     if (!isMd && !isHtml) {
       return Response.json(
-        { error: ".md 또는 .html 파일만 업로드할 수 있습니다." },
+        { error: ".md 또는 .html 파일만 업로드할 수 있습니다" },
         { status: 400 }
       );
     }
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     if (file.size > MAX_SIZE) {
       return Response.json(
-        { error: "파일 크기는 25MB 이하여야 합니다." },
+        { error: "파일 크기는 25MB 이하여야 합니다" },
         { status: 400 }
       );
     }
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     );
   } catch {
     return Response.json(
-      { error: "업로드에 실패했습니다. 다시 시도해주세요." },
+      { error: "업로드에 실패했습니다" },
       { status: 500, headers: corsHeaders }
     );
   }

@@ -34,7 +34,7 @@ export async function POST(
 
     if (restored === null) {
       return Response.json(
-        { error: "되돌릴 이전 버전이 없습니다." },
+        { error: "되돌릴 버전이 없습니다" },
         { status: 404 }
       );
     }
@@ -42,7 +42,7 @@ export async function POST(
     return Response.json({ content: restored });
   } catch {
     return Response.json(
-      { error: "되돌리기에 실패했습니다. 다시 시도해주세요." },
+      { error: "되돌리기에 실패했습니다" },
       { status: 500 }
     );
   }

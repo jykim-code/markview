@@ -6,6 +6,7 @@ import { HtmlRenderer } from "./HtmlRenderer";
 import { HtmlExportButton } from "./HtmlExportButton";
 import { EditorHeader } from "./EditorHeader";
 import { useRevert } from "@/lib/useRevert";
+import { saveDocument } from "@/lib/saveDocument";
 import { useToast } from "./Toast";
 import type { CodeController } from "./CodeEditor";
 
@@ -103,22 +104,14 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
-      const res = await fetch(`/api/documents/${slug}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
-      });
-      // The response status has to be checked: a failed save used to report
-      // success anyway, leaving the author believing their edit was persisted.
-      if (!res.ok) {
-        toast.error("저장에 실패했습니다");
+      const result = await saveDocument(slug, content);
+      if (!result.ok) {
+        toast.error(result.message);
         return;
       }
       toast.success("저장했습니다");
       // The save just produced a backup, unless the body exceeded the size cap.
       void refreshRevert();
-    } catch {
-      toast.error("저장에 실패했습니다");
     } finally {
       setSaving(false);
     }

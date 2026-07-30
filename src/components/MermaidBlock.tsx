@@ -53,7 +53,7 @@ export function MermaidBlock({ chart }: MermaidBlockProps) {
         }
       } catch {
         if (!cancelled) {
-          setError("다이어그램을 렌더링할 수 없습니다.");
+          setError("다이어그램을 렌더링할 수 없습니다");
         }
       }
     }

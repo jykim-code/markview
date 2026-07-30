@@ -19,7 +19,7 @@ export async function PUT(
 
     if (!body.content && body.content !== "") {
       return Response.json(
-        { error: "content 필드가 필요합니다." },
+        { error: "content 필드가 필요합니다" },
         { status: 400 }
       );
     }
@@ -28,7 +28,7 @@ export async function PUT(
 
     if (!updated) {
       return Response.json(
-        { error: "문서를 찾을 수 없습니다." },
+        { error: "문서를 찾을 수 없습니다" },
         { status: 404 }
       );
     }
@@ -36,7 +36,7 @@ export async function PUT(
     return Response.json({ success: true });
   } catch {
     return Response.json(
-      { error: "저장에 실패했습니다. 다시 시도해주세요." },
+      { error: "저장에 실패했습니다" },
       { status: 500 }
     );
   }
@@ -60,7 +60,7 @@ export async function DELETE(
 
     if (!token || !(await verifyOwnerToken(slug, token))) {
       return Response.json(
-        { error: "이 문서를 삭제할 권한이 없습니다." },
+        { error: "삭제 권한이 없습니다" },
         { status: 403 }
       );
     }
@@ -68,7 +68,7 @@ export async function DELETE(
     const deleted = await deleteDocument(slug);
     if (!deleted) {
       return Response.json(
-        { error: "이 문서를 삭제할 권한이 없습니다." },
+        { error: "삭제 권한이 없습니다" },
         { status: 403 }
       );
     }
@@ -76,7 +76,7 @@ export async function DELETE(
     return Response.json({ success: true });
   } catch {
     return Response.json(
-      { error: "삭제에 실패했습니다. 다시 시도해주세요." },
+      { error: "삭제에 실패했습니다" },
       { status: 500 }
     );
   }

@@ -19,13 +19,13 @@ export function UploadZone() {
       const isHtml = file.name.endsWith(".html") || file.name.endsWith(".htm");
 
       if (!isMd && !isHtml) {
-        setError(".md 또는 .html 파일만 업로드할 수 있습니다.");
+        setError(".md 또는 .html 파일만 업로드할 수 있습니다");
         return;
       }
 
       const maxSize = 25 * 1024 * 1024; // 25MB (body stored in R2)
       if (file.size > maxSize) {
-        setError("파일 크기는 25MB 이하여야 합니다.");
+        setError("파일 크기는 25MB 이하여야 합니다");
         return;
       }
 
@@ -49,7 +49,7 @@ export function UploadZone() {
         };
 
         if (!res.ok || !data.slug) {
-          setError(data.error || "업로드에 실패했습니다.");
+          setError(data.error || "업로드에 실패했습니다");
           return;
         }
 
@@ -66,7 +66,7 @@ export function UploadZone() {
 
         router.push(`/v/${data.slug}`);
       } catch {
-        setError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+        setError("네트워크 연결을 확인해주세요");
       } finally {
         setIsUploading(false);
       }
