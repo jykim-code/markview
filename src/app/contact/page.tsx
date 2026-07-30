@@ -34,7 +34,8 @@ export default function ContactPage() {
         </Link>
         <nav className="flex items-center gap-4 md:gap-6">
           <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</Link>
-          <Link href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</Link>
+          <Link href="/my" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">My Docs</Link>
+          <Link href="/about" className="hidden text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy sm:inline">About</Link>
           <Link href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</Link>
           <Link href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy">Contact</Link>
           <ThemeToggle />

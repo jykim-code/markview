@@ -7,6 +7,7 @@ import { TableOfContents } from "./TableOfContents";
 import { ExportButton } from "./ExportButton";
 import { EditorHeader } from "./EditorHeader";
 import { locateInElement } from "@/lib/editorSync";
+import { useRevert } from "@/lib/useRevert";
 import type { CodeController } from "./CodeEditor";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), {
@@ -84,6 +85,9 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
     [lock]
   );
 
+  const { available: revertAvailable, reverting, revert, refresh: refreshRevert } =
+    useRevert(slug, setContent);
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -94,10 +98,12 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
+      // The save just produced a backup, unless the body exceeded the size cap.
+      void refreshRevert();
     } finally {
       setSaving(false);
     }
-  }, [slug, content]);
+  }, [slug, content, refreshRevert]);
 
   const handleShare = useCallback(async () => {
     const shareUrl = `${window.location.origin}/v/${slug}`;
@@ -146,6 +152,9 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
         exportButton={<ExportButton content={content} title={title} />}
         onShare={handleShare}
         copied={copied}
+        onRevert={revert}
+        revertAvailable={revertAvailable}
+        reverting={reverting}
       />
 
       {/* Body */}

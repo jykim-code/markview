@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { HtmlRenderer } from "./HtmlRenderer";
 import { HtmlExportButton } from "./HtmlExportButton";
 import { EditorHeader } from "./EditorHeader";
+import { useRevert } from "@/lib/useRevert";
 import type { CodeController } from "./CodeEditor";
 
 // Load the CodeMirror editor only on the client, and only once Edit mode renders
@@ -90,6 +91,15 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
     iframeRef.current?.contentWindow?.postMessage({ mv: "locate", text }, "*");
   }, []);
 
+  // Restoring has to refresh the rendered iframe too, not just the source pane.
+  const handleRestored = useCallback((restored: string) => {
+    setContent(restored);
+    setPreview(restored);
+  }, []);
+
+  const { available: revertAvailable, reverting, revert, refresh: refreshRevert } =
+    useRevert(slug, handleRestored);
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -100,10 +110,12 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
+      // The save just produced a backup, unless the body exceeded the size cap.
+      void refreshRevert();
     } finally {
       setSaving(false);
     }
-  }, [slug, content]);
+  }, [slug, content, refreshRevert]);
 
   const handleShare = useCallback(async () => {
     const shareUrl = `${window.location.origin}/v/${slug}`;
@@ -137,6 +149,9 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
         exportButton={<HtmlExportButton content={content} title={title} />}
         onShare={handleShare}
         copied={copied}
+        onRevert={revert}
+        revertAvailable={revertAvailable}
+        reverting={reverting}
       />
 
       {/* Body */}

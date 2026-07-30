@@ -21,6 +21,10 @@ interface EditorHeaderProps {
   exportButton: ReactNode;
   onShare: () => void;
   copied: boolean;
+  /** Revert control — only rendered once a previous version exists. */
+  onRevert: () => void;
+  revertAvailable: boolean;
+  reverting: boolean;
 }
 
 /**
@@ -44,6 +48,9 @@ export function EditorHeader({
   exportButton,
   onShare,
   copied,
+  onRevert,
+  revertAvailable,
+  reverting,
 }: EditorHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -109,7 +116,39 @@ export function EditorHeader({
     </button>
   );
 
+  /**
+   * Recovery path for open editing: anyone with the link can save over this
+   * document, so anyone looking at it can also undo the last save.
+   */
+  const revertButton = revertAvailable ? (
+    <button
+      onClick={onRevert}
+      disabled={reverting}
+      title="마지막 저장 직전 내용으로 되돌립니다"
+      className="flex items-center gap-1.5 rounded-full border border-navy/15 bg-bg px-4 py-2 text-xs font-semibold text-navy/70 transition-all hover:border-navy/30 hover:text-navy disabled:opacity-50"
+    >
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v6h6" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13a9 9 0 1 0 3-7.7L3 8" />
+      </svg>
+      {reverting ? "되돌리는 중..." : "되돌리기"}
+    </button>
+  ) : null;
+
+  const myDocsLink = (
+    <Link
+      href="/my"
+      className="flex items-center gap-1.5 rounded-full border border-navy/15 bg-bg px-4 py-2 text-xs font-semibold text-navy/70 transition-all hover:border-navy/30 hover:text-navy"
+    >
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 0 1 2-2h3l2 2h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+      </svg>
+      내 문서
+    </Link>
+  );
+
   return (
+    <>
     <header
       className="sticky top-0 z-10 flex h-[66px] shrink-0 items-center justify-between gap-2 bg-bg px-4 md:px-8"
       style={{ borderBottom: "1px solid var(--header-border)" }}
@@ -143,8 +182,10 @@ export function EditorHeader({
       {/* Right group — desktop */}
       <div className="hidden items-center gap-2 md:flex">
         {saveButton}
+        {revertButton}
         {exportButton}
         {shareButton}
+        {myDocsLink}
         <ThemeToggle />
       </div>
 
@@ -174,8 +215,12 @@ export function EditorHeader({
               <div onClick={() => setMenuOpen(false)}>{scrollSyncButton}</div>
             )}
             <div onClick={() => setMenuOpen(false)}>{saveButton}</div>
+            {revertButton && (
+              <div onClick={() => setMenuOpen(false)}>{revertButton}</div>
+            )}
             {exportButton}
             <div onClick={() => setMenuOpen(false)}>{shareButton}</div>
+            <div onClick={() => setMenuOpen(false)}>{myDocsLink}</div>
             <div className="flex justify-center" onClick={() => setMenuOpen(false)}>
               <ThemeToggle />
             </div>
@@ -183,5 +228,18 @@ export function EditorHeader({
         )}
       </div>
     </header>
+
+    {/*
+      Editing is open by design, which is not obvious from the UI — someone who
+      received the link can save over this document, and so can you over theirs.
+      Say so where the save button is, not buried in a help page.
+    */}
+    {mode === "edit" && (
+      <div className="shrink-0 bg-cream px-4 py-2 text-[11px] leading-snug text-navy/50 md:px-8">
+        이 링크를 가진 누구나 이 문서를 편집할 수 있습니다.
+        {revertAvailable && " 잘못된 저장은 «되돌리기»로 직전 내용으로 복구할 수 있습니다."}
+      </div>
+    )}
+    </>
   );
 }

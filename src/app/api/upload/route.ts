@@ -3,6 +3,8 @@ import {
   extractTitle,
   extractHtmlTitle,
   insertDocument,
+  generateOwnerToken,
+  hashOwnerToken,
   type DocType,
 } from "@/lib/db";
 
@@ -53,13 +55,18 @@ export async function POST(request: Request) {
     const content = await file.text();
     const title = isHtml ? extractHtmlTitle(content) : extractTitle(content);
 
+    // Ownership proof for the uploader. This response is the only time the
+    // plaintext token is ever available — only its hash is stored.
+    const ownerToken = generateOwnerToken();
+    const ownerTokenHash = await hashOwnerToken(ownerToken);
+
     // Retry slug generation up to 3 times on collision
     let slug = "";
     for (let attempt = 0; attempt < 3; attempt++) {
       slug = generateSlug();
       try {
         const id = crypto.randomUUID();
-        await insertDocument(id, slug, title, content, type);
+        await insertDocument(id, slug, title, content, type, ownerTokenHash);
         break;
       } catch (err: unknown) {
         if (
@@ -72,7 +79,10 @@ export async function POST(request: Request) {
       }
     }
 
-    return Response.json({ slug, title, type }, { headers: corsHeaders });
+    return Response.json(
+      { slug, title, type, owner_token: ownerToken },
+      { headers: corsHeaders }
+    );
   } catch {
     return Response.json(
       { error: "업로드에 실패했습니다. 다시 시도해주세요." },

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { addMyDoc } from "@/lib/myDocs";
 
 export function UploadZone() {
   const router = useRouter();
@@ -39,11 +40,28 @@ export function UploadZone() {
           body: formData,
         });
 
-        const data = (await res.json()) as { error?: string; slug?: string };
+        const data = (await res.json()) as {
+          error?: string;
+          slug?: string;
+          title?: string;
+          type?: string;
+          owner_token?: string;
+        };
 
-        if (!res.ok) {
+        if (!res.ok || !data.slug) {
           setError(data.error || "업로드에 실패했습니다.");
           return;
+        }
+
+        // Record it in this browser's list so the uploader can find the link
+        // again later, and keep the token that proves ownership.
+        if (data.owner_token) {
+          addMyDoc({
+            slug: data.slug,
+            owner_token: data.owner_token,
+            title: data.title,
+            type: data.type,
+          });
         }
 
         router.push(`/v/${data.slug}`);
