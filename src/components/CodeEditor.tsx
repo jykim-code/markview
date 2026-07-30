@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
@@ -67,11 +67,9 @@ export default function CodeEditor({
   onScrollRatio,
   onSelect,
 }: CodeEditorProps) {
-  // Keep the latest onSelect in a ref so the (memoized) extension stays fresh
-  // without being rebuilt on every render.
-  const onSelectRef = useRef(onSelect);
-  onSelectRef.current = onSelect;
-
+  // Callers pass a stable (useCallback'd) onSelect, so depending on it directly
+  // keeps the extension list from being rebuilt on every render without needing
+  // to smuggle the callback through a ref.
   const extensions = useMemo(
     () => [
       language === "markdown" ? markdown() : html(),
@@ -80,12 +78,12 @@ export default function CodeEditor({
         if (!u.selectionSet) return;
         const r = u.state.selection.main;
         if (r.empty) return;
-        onSelectRef.current?.(
+        onSelect?.(
           u.state.doc.sliceString(r.from, Math.min(r.to, r.from + 200))
         );
       }),
     ],
-    [language]
+    [language, onSelect]
   );
 
   function handleCreate(view: EditorView) {

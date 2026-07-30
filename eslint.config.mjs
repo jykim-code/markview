@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Build output — generated bundles, not source. ESLint does not read
+    // .gitignore, so these need listing even though git already ignores them.
+    ".open-next/**",
+    "extension/dist/**",
   ]),
 ]);
 

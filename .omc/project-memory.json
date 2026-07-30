@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1785116831213,
-  "projectRoot": "C:\\Users\\jykim\\source\\mdViewing\\markview",
+  "lastScanned": 1785305787458,
+  "projectRoot": "D:\\dev\\markview",
   "techStack": {
     "languages": [
       {
@@ -69,7 +69,10 @@
       "scripts",
       "src"
     ],
-    "gitBranches": null
+    "gitBranches": {
+      "defaultBranch": "master",
+      "branchingStrategy": null
+    }
   },
   "customNotes": [],
   "directoryMap": {
@@ -77,7 +80,7 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 6,
-      "lastAccessed": 1785116830075,
+      "lastAccessed": 1785305787373,
       "keyFiles": [
         "extension_개발산출물.md",
         "ROADMAP.md",
@@ -90,7 +93,7 @@
       "path": "extension",
       "purpose": null,
       "fileCount": 7,
-      "lastAccessed": 1785116830077,
+      "lastAccessed": 1785305787374,
       "keyFiles": [
         "manifest.json",
         "package-lock.json",
@@ -103,7 +106,7 @@
       "path": "migrations",
       "purpose": "Database migrations",
       "fileCount": 2,
-      "lastAccessed": 1785116830106,
+      "lastAccessed": 1785305787374,
       "keyFiles": [
         "0001_init.sql",
         "0002_add_type.sql"
@@ -113,7 +116,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 11,
-      "lastAccessed": 1785116830107,
+      "lastAccessed": 1785305787375,
       "keyFiles": [
         "ads.txt",
         "design-preview.html",
@@ -126,7 +129,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 1,
-      "lastAccessed": 1785116830108,
+      "lastAccessed": 1785305787375,
       "keyFiles": [
         "prepare-pages.mjs"
       ]
@@ -135,32 +138,34 @@
       "path": "src",
       "purpose": "Source code",
       "fileCount": 0,
-      "lastAccessed": 1785116830109,
+      "lastAccessed": 1785305787376,
       "keyFiles": []
     },
-    "extension\\dist": {
-      "path": "extension\\dist",
-      "purpose": "Distribution/build output",
-      "fileCount": 8,
-      "lastAccessed": 1785116830112,
+    "_workspace": {
+      "path": "_workspace",
+      "purpose": null,
+      "fileCount": 7,
+      "lastAccessed": 1785305787377,
       "keyFiles": [
-        "background.js",
-        "file-access-guide.html",
-        "manifest.json"
+        "example.html",
+        "example.png",
+        "extension_error.png",
+        "image copy.png",
+        "image.html"
       ]
     },
     "extension\\node_modules": {
       "path": "extension\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 1,
-      "lastAccessed": 1785116830115,
+      "lastAccessed": 1785305787378,
       "keyFiles": []
     },
     "extension\\public": {
       "path": "extension\\public",
       "purpose": "Public files",
       "fileCount": 3,
-      "lastAccessed": 1785116830116,
+      "lastAccessed": 1785305787379,
       "keyFiles": [
         "file-access-guide.html",
         "markview_text_icon.svg",
@@ -171,7 +176,7 @@
       "path": "extension\\src",
       "purpose": "Source code",
       "fileCount": 3,
-      "lastAccessed": 1785116830118,
+      "lastAccessed": 1785305787379,
       "keyFiles": [
         "background.ts",
         "main.tsx",
@@ -182,7 +187,7 @@
       "path": "src\\app",
       "purpose": "Application code",
       "fileCount": 4,
-      "lastAccessed": 1785116830123,
+      "lastAccessed": 1785305787381,
       "keyFiles": [
         "globals.css",
         "layout.tsx",
@@ -193,7 +198,7 @@
       "path": "src\\components",
       "purpose": "UI components",
       "fileCount": 14,
-      "lastAccessed": 1785116830124,
+      "lastAccessed": 1785305787382,
       "keyFiles": [
         "CodeEditor.tsx",
         "EditorHeader.tsx",
@@ -204,7 +209,7 @@
       "path": "src\\lib",
       "purpose": "Library code",
       "fileCount": 2,
-      "lastAccessed": 1785116830125,
+      "lastAccessed": 1785305787382,
       "keyFiles": [
         "db.ts",
         "editorSync.ts"
@@ -213,11 +218,223 @@
   },
   "hotPaths": [
     {
+      "path": "docs/ROADMAP.md",
+      "accessCount": 41,
+      "lastAccessed": 1785387764819,
+      "type": "file"
+    },
+    {
+      "path": "src/components/CodeEditor.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1785309619573,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 5,
+      "lastAccessed": 1785387614286,
+      "type": "directory"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1785309640866,
+      "type": "file"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "accessCount": 3,
+      "lastAccessed": 1785310515137,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/.claude/projects/D--dev-markview/memory/MEMORY.md",
+      "accessCount": 3,
+      "lastAccessed": 1785375533738,
+      "type": "file"
+    },
+    {
+      "path": "src/app/globals.css",
+      "accessCount": 2,
+      "lastAccessed": 1785309356310,
+      "type": "file"
+    },
+    {
+      "path": "src/components/ThemeToggle.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785309367783,
+      "type": "file"
+    },
+    {
+      "path": "extension/src/components/ThemeToggle.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785310408057,
+      "type": "file"
+    },
+    {
+      "path": "extension/src/components/SiteAccessToggle.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785311223169,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/upload/route.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785375114481,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/.claude/CLAUDE.md",
+      "accessCount": 2,
+      "lastAccessed": 1785376050052,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/.claude/projects/D--dev-markview/memory/natural-korean-no-translationese.md",
+      "accessCount": 2,
+      "lastAccessed": 1785376077496,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/db.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785387560023,
+      "type": "directory"
+    },
+    {
+      "path": "wrangler.toml",
+      "accessCount": 2,
+      "lastAccessed": 1785387605702,
+      "type": "file"
+    },
+    {
+      "path": "extension/src/background.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785387613170,
+      "type": "file"
+    },
+    {
+      "path": "public/M.svg",
+      "accessCount": 2,
+      "lastAccessed": 1785388072876,
+      "type": "file"
+    },
+    {
       "path": "src/components/MarkdownRenderer.tsx",
       "accessCount": 1,
       "lastAccessed": 1785117045264,
       "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 1,
+      "lastAccessed": 1785305898200,
+      "type": "file"
+    },
+    {
+      "path": "scripts/prepare-pages.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1785305945808,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/AppData/Local/Temp/claude/D--dev-markview/73325b37-f4ad-4e05-ba16-a7003dc082ae/scratchpad/to-link.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1785309505996,
+      "type": "file"
+    },
+    {
+      "path": "src/components/SplitEditor.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785309588834,
+      "type": "file"
+    },
+    {
+      "path": "src/components/HtmlEditor.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785309589841,
+      "type": "file"
+    },
+    {
+      "path": "extension/manifest.json",
+      "accessCount": 1,
+      "lastAccessed": 1785310128183,
+      "type": "file"
+    },
+    {
+      "path": "extension/package.json",
+      "accessCount": 1,
+      "lastAccessed": 1785310128711,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/.claude/projects/D--dev-markview/memory/extension-chrome-store-goal.md",
+      "accessCount": 1,
+      "lastAccessed": 1785310223026,
+      "type": "file"
+    },
+    {
+      "path": "extension/src/__tests__/ThemeToggle.test.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785310334553,
+      "type": "file"
+    },
+    {
+      "path": "extension/sidepanel.html",
+      "accessCount": 1,
+      "lastAccessed": 1785310359329,
+      "type": "file"
+    },
+    {
+      "path": "extension/src/styles/globals.css",
+      "accessCount": 1,
+      "lastAccessed": 1785310392749,
+      "type": "file"
+    },
+    {
+      "path": "migrations/0001_init.sql",
+      "accessCount": 1,
+      "lastAccessed": 1785375107314,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1785375110822,
+      "type": "directory"
+    },
+    {
+      "path": "src/app/api/documents/[slug]/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1785375114530,
+      "type": "file"
+    },
+    {
+      "path": "src/components/UploadZone.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785387605258,
+      "type": "file"
+    },
+    {
+      "path": "docs/P0_설계.md",
+      "accessCount": 1,
+      "lastAccessed": 1785387758888,
+      "type": "file"
+    },
+    {
+      "path": "C:/Users/jykim/AppData/Local/Temp/claude/D--dev-markview/b7c9dbde-d634-4345-b9b0-da244df045a1/scratchpad/gen-icons.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1785388112906,
+      "type": "file"
     }
   ],
-  "userDirectives": []
+  "userDirectives": [
+    {
+      "timestamp": 1785376059192,
+      "directive": "한국어 응답·문서에서 영어 관용구를 직역하지 말 것. 금지: \"통증\"(pain point→불편한 점/문제), \"싸게 해결\"(cheaper to fix→공수가 덜 든다), \"근시일\"(near-term→당장/단기적으로), \"무마찰\"(frictionless→번거로움 없이), \"가성비가 압도적\"(→투입 대비 효과가 크다), \"~의 실체는\"(→실제로 정해야 할 건). 기술 용어는 그대로 두고 번역체 명사구만 걸러낼 것. 커밋 메시지·docs/*.md 등 산출물에도 동일 적용.",
+      "context": "2026-07-30 사용자가 ROADMAP 우선순위 논의 중 직접 지적. 상세 규칙은 ~/.claude/CLAUDE.md의 USER-PREFS 블록과 프로젝트 auto-memory의 natural-korean-no-translationese.md 참조.",
+      "source": "explicit",
+      "priority": "high"
+    }
+  ]
 }

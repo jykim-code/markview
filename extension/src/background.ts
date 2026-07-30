@@ -1,3 +1,5 @@
+import { originPattern } from "./lib/origin";
+
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
 const MARKVIEW_BASE = "https://markview-4hy.pages.dev";
@@ -83,6 +85,23 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 });
 
+// --- Optional host permission ---
+
+// Broad site access is an optional permission (see manifest
+// optional_host_permissions), granted by the user from the side panel. Reading a
+// download's bytes needs access to the site that served it, so every
+// interception path checks first instead of assuming access.
+
+async function hasHostAccess(url: string): Promise<boolean> {
+  const origin = originPattern(url);
+  if (!origin) return false;
+  try {
+    return await chrome.permissions.contains({ origins: [origin] });
+  } catch {
+    return false;
+  }
+}
+
 // --- Download interception (existing) ---
 
 // Fetch .md content using the active tab's context (has auth cookies)
@@ -129,6 +148,11 @@ async function interceptMdDownload(id: number, url: string, finalUrl?: string) {
   handledDownloads.add(id);
   // Prevent memory leak — clean up after 30s
   setTimeout(() => handledDownloads.delete(id), 30_000);
+
+  // Without access to the serving site we cannot read the file, so leave the
+  // download alone. Cancelling here would lose the user's file and leave them
+  // with nothing to show for it.
+  if (!(await hasHostAccess(url))) return;
 
   // Cancel and erase the download
   chrome.downloads.cancel(id, () => {

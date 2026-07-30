@@ -61,7 +61,7 @@ gtag('config', 'G-THLNKBRLFH');`,
         />
         {/* Cloudflare Web Analytics */}
         <script
-          type="module"
+          defer
           src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "863e398bca034d0cb9103e00bab4b4f2"}'
         />

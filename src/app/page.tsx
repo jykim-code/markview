@@ -1,21 +1,22 @@
 import Image from "next/image";
 import { UploadZone } from "@/components/UploadZone";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-bg">
       {/* Header Bar */}
       <header className="sticky top-0 z-50 flex h-[66px] items-center justify-between bg-bg px-8 transition-colors duration-300" style={{ borderBottom: '1px solid var(--header-border)' }}>
-        <a href="/">
+        <Link href="/">
           <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-light" />
           <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-dark" />
-        </a>
+        </Link>
         <nav className="flex items-center gap-4 md:gap-6">
-          <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</a>
-          <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
-          <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</a>
-          <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
+          <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</Link>
+          <Link href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</Link>
+          <Link href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</Link>
+          <Link href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</Link>
           <ThemeToggle />
         </nav>
       </header>
@@ -94,9 +95,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="flex flex-col items-center gap-4 border-t border-navy/[0.06] px-6 py-6 md:flex-row md:justify-between md:px-16">
         <div className="flex gap-5">
-          <a href="/about" className="text-[11px] font-semibold text-navy/35 hover:text-navy">About</a>
-          <a href="/privacy" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Privacy</a>
-          <a href="/contact" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Contact</a>
+          <Link href="/about" className="text-[11px] font-semibold text-navy/35 hover:text-navy">About</Link>
+          <Link href="/privacy" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Privacy</Link>
+          <Link href="/contact" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Contact</Link>
         </div>
         <span className="text-[10px] uppercase tracking-[3px] text-navy/50">
           Markview — Markdown + View

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "개인정보 처리방침 — Markview",
@@ -11,15 +12,15 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-bg transition-colors duration-300">
       <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-4 md:px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
-        <a href="/" className="transition-opacity hover:opacity-70">
+        <Link href="/" className="transition-opacity hover:opacity-70">
           <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-light" />
           <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-dark" />
-        </a>
+        </Link>
         <nav className="flex items-center gap-4 md:gap-6">
-          <a href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</a>
-          <a href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</a>
-          <a href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy">Privacy</a>
-          <a href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</a>
+          <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</Link>
+          <Link href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</Link>
+          <Link href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy">Privacy</Link>
+          <Link href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Contact</Link>
           <ThemeToggle />
         </nav>
       </header>
@@ -76,9 +77,9 @@ export default function PrivacyPage() {
 
       <footer className="mx-auto flex max-w-[720px] items-center justify-between border-t border-navy/[0.04] px-5 py-6 md:px-6">
         <div className="flex gap-5">
-          <a href="/about" className="text-[11px] font-semibold text-navy/35 hover:text-navy">About</a>
-          <a href="/privacy" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Privacy</a>
-          <a href="/contact" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Contact</a>
+          <Link href="/about" className="text-[11px] font-semibold text-navy/35 hover:text-navy">About</Link>
+          <Link href="/privacy" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Privacy</Link>
+          <Link href="/contact" className="text-[11px] font-semibold text-navy/35 hover:text-navy">Contact</Link>
         </div>
         <span className="text-[10px] tracking-[3px] text-navy/15">MARKVIEW</span>
       </footer>
