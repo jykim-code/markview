@@ -154,8 +154,10 @@ export default {
       request = new Request(request, { headers });
     }
 
+    // sessionIdGenerator: undefined = stateless mode (no session tracking).
+    // Per-request session IDs break Claude Code's multi-request handshake.
     const transport = new WebStandardStreamableHTTPServerTransport({
-      sessionIdGenerator: () => crypto.randomUUID(),
+      sessionIdGenerator: undefined,
     });
     const server = createServer(env);
     await server.connect(transport);
