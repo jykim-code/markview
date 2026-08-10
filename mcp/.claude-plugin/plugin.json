@@ -1,0 +1,15 @@
+{
+  "name": "markview-mcp",
+  "version": "0.1.0",
+  "description": "Markdown 또는 HTML 문자열을 Markview에 발행하고 공유 링크를 반환합니다.",
+  "author": {
+    "name": "Markview",
+    "url": "https://github.com/jykim-code/markview"
+  },
+  "mcpServers": {
+    "markview": {
+      "type": "http",
+      "url": "https://markview-mcp.hancomtech.workers.dev"
+    }
+  }
+}
