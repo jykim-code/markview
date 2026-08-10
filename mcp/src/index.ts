@@ -72,8 +72,9 @@ function createServer(env: Env): McpServer {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    // Serve Smithery/well-known metadata
     const url = new URL(request.url);
+
+    // Smithery server card metadata
     if (url.pathname === "/.well-known/mcp/server-card.json") {
       return Response.json({
         name: "Markview",
@@ -82,19 +83,30 @@ export default {
       });
     }
 
-    // Claude Code omits text/event-stream from Accept, causing the transport to
-  // return 406. Patch the header so the transport accepts the request.
+    // OAuth discovery: return 404 to signal "no auth required".
+    // Claude Code sends GET /.well-known/oauth-authorization-server before
+    // connecting; 404 tells it to proceed without auth.
+    if (request.method === "GET") {
+      return new Response(null, { status: 404 });
+    }
+
+    // Only POST is valid for Streamable HTTP MCP.
+    if (request.method !== "POST") {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    // Ensure Accept header includes both required types (Claude Code omits
+    // text/event-stream, which causes the transport to reject with 406).
     const accept = request.headers.get("Accept") ?? "";
-    if (!accept.includes("text/event-stream")) {
+    if (!accept.includes("text/event-stream") || !accept.includes("application/json")) {
       const headers = new Headers(request.headers);
-      headers.set("Accept", accept ? `${accept}, text/event-stream` : "application/json, text/event-stream");
+      headers.set("Accept", "application/json, text/event-stream");
       request = new Request(request, { headers });
     }
 
     const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: () => crypto.randomUUID(),
     });
-
     const server = createServer(env);
     await server.connect(transport);
     return transport.handleRequest(request);
