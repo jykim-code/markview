@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "markview",
+  "description": "Markview — Markdown/HTML 문서를 업로드하고 공유 링크를 만드는 MCP 서버",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Markview",
+    "url": "https://github.com/jykim-code/markview"
+  },
+  "plugins": [
+    {
+      "name": "markview-mcp",
+      "source": "./mcp",
+      "description": "Markdown 또는 HTML 문자열을 Markview에 발행하고 공유 링크를 반환합니다.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["markdown", "html", "publish", "share"],
+      "homepage": "https://markview-4hy.pages.dev",
+      "repository": "https://github.com/jykim-code/markview",
+      "license": "MIT"
+    }
+  ]
+}
