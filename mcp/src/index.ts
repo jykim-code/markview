@@ -101,6 +101,7 @@ export default {
 
     // ── Dynamic Client Registration (RFC 7591) ───────────────────────────────
     if (url.pathname === "/register" && request.method === "POST") {
+      const body = await request.json() as { redirect_uris?: string[]; client_name?: string };
       const clientId = crypto.randomUUID();
       const clientSecret = crypto.randomUUID().replace(/-/g, "");
       return Response.json(
@@ -108,7 +109,9 @@ export default {
           client_id: clientId,
           client_secret: clientSecret,
           client_id_issued_at: Math.floor(Date.now() / 1000),
-          client_secret_expires_at: 0, // never
+          client_secret_expires_at: 0,
+          redirect_uris: body.redirect_uris ?? [],
+          client_name: body.client_name ?? "markview-client",
         },
         { status: 201 }
       );
