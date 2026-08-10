@@ -85,17 +85,33 @@ export default {
     }
 
     // ── OAuth Authorization Server metadata ──────────────────────────────────
-    // Claude Code requires HTTP MCP servers to support OAuth. This is a public
-    // server so we implement a "rubber stamp" flow: auto-approve every request.
+    // Claude Code requires HTTP MCP servers to support OAuth + Dynamic Client
+    // Registration (RFC 7591). This is a public server so we rubber-stamp all.
     if (url.pathname === "/.well-known/oauth-authorization-server") {
       return Response.json({
         issuer: origin,
         authorization_endpoint: `${origin}/authorize`,
         token_endpoint: `${origin}/token`,
+        registration_endpoint: `${origin}/register`,
         response_types_supported: ["code"],
         grant_types_supported: ["authorization_code"],
         code_challenge_methods_supported: ["S256"],
       });
+    }
+
+    // ── Dynamic Client Registration (RFC 7591) ───────────────────────────────
+    if (url.pathname === "/register" && request.method === "POST") {
+      const clientId = crypto.randomUUID();
+      const clientSecret = crypto.randomUUID().replace(/-/g, "");
+      return Response.json(
+        {
+          client_id: clientId,
+          client_secret: clientSecret,
+          client_id_issued_at: Math.floor(Date.now() / 1000),
+          client_secret_expires_at: 0, // never
+        },
+        { status: 201 }
+      );
     }
 
     // ── OAuth Authorization endpoint ─────────────────────────────────────────
