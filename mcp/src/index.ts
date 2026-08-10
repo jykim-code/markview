@@ -82,6 +82,15 @@ export default {
       });
     }
 
+    // Claude Code omits text/event-stream from Accept, causing the transport to
+  // return 406. Patch the header so the transport accepts the request.
+    const accept = request.headers.get("Accept") ?? "";
+    if (!accept.includes("text/event-stream")) {
+      const headers = new Headers(request.headers);
+      headers.set("Accept", accept ? `${accept}, text/event-stream` : "application/json, text/event-stream");
+      request = new Request(request, { headers });
+    }
+
     const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: () => crypto.randomUUID(),
     });
