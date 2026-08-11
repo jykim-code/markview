@@ -254,6 +254,27 @@ async function capturePrevVersion(
   }
 }
 
+/**
+ * Fetch only title+type from D1 — no R2 call. Used for SSR metadata/shell
+ * so the Worker doesn't serialise large content into the RSC payload.
+ */
+export async function getDocumentMeta(
+  slug: string
+): Promise<{ title: string; type: DocType } | null> {
+  if (isCloudflare()) {
+    const row = await getD1()
+      .prepare("SELECT title, type FROM documents WHERE slug = ?")
+      .bind(slug)
+      .first<{ title: string; type: string }>();
+    if (!row) return null;
+    return { title: row.title, type: (row.type as DocType) || "md" };
+  } else {
+    const localDB = await readLocalDB();
+    const doc = localDB.documents.find((d) => d.slug === slug);
+    return doc ? { title: doc.title, type: doc.type || "md" } : null;
+  }
+}
+
 export async function getDocumentBySlug(
   slug: string
 ): Promise<{ title: string; content: string; type: DocType } | null> {
