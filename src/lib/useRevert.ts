@@ -8,8 +8,8 @@ import { useToast } from "@/components/Toast";
  *
  * Editing is open to anyone holding the link, so this is the recovery path when
  * a document gets wrecked — see docs/ROADMAP.md §2. Availability is fetched
- * rather than assumed: bodies over the size cap never get a backup, so a saved
- * document does not always have something to revert to.
+ * rather than assumed: a document that has never been saved over has no backup,
+ * so the control has nothing to offer until the first edit lands.
  *
  * There is deliberately no confirmation step. Reverting swaps the two versions,
  * so pressing it again undoes it — asking first would be friction for an action

@@ -103,13 +103,6 @@ function prevKey(slug: string): string {
   return `_prev/${slug}`;
 }
 
-/**
- * Bodies above this size skip prev-version capture. R2 has no server-side copy,
- * so keeping a backup costs a full read plus a full write on every save; with a
- * 25MB upload ceiling that would mean ~50MB of extra I/O per keystroke-batch.
- */
-const PREV_MAX_BYTES = 5 * 1024 * 1024;
-
 // --- Cloudflare D1 ---
 
 // Lazily resolve the Cloudflare binding context. Kept as require() (not a
@@ -220,6 +213,8 @@ export async function updateDocument(
     const localDB = await readLocalDB();
     const doc = localDB.documents.find((d) => d.slug === slug);
     if (!doc) return false;
+    // Mirrors the Cloudflare path: every save keeps a prev copy, no size check.
+    // A cap on only one of the two branches is what hid §9 F2 during local dev.
     doc.prev_content = doc.content;
     doc.content = content;
     await writeLocalDB(localDB);
@@ -231,6 +226,17 @@ export async function updateDocument(
  * Copy the body that is about to be overwritten into the prev slot. Best
  * effort: a failure here must not block the user's save, since losing the
  * backup is strictly better than losing the edit.
+ *
+ * R2's Workers binding has no server-side copy, so this is a get plus a put.
+ * The body is piped from one to the other instead of being buffered: a 25MB
+ * document held as a JS string costs roughly twice that in the isolate's 128MB
+ * budget, and a streamed copy spends I/O wait rather than the CPU time the
+ * 50ms limit actually bounds.
+ *
+ * There is deliberately no size ceiling. An earlier version skipped bodies over
+ * 5MB, which left every document between that and the 25MB upload limit with no
+ * recovery path — and kept the slot from an older save, so "revert" restored a
+ * version two steps back (docs/P0_설계.md §9 F2).
  */
 async function capturePrevVersion(
   slug: string,
@@ -240,17 +246,22 @@ async function capturePrevVersion(
     const r2 = getR2();
     const existing = await r2.get(slug);
     if (existing) {
-      if (existing.size > PREV_MAX_BYTES) return;
-      await r2.put(prevKey(slug), await existing.arrayBuffer());
+      await r2.put(prevKey(slug), existing.body);
       return;
     }
-    // Legacy row: body still in the D1 content column. Such rows predate the
-    // 25MB ceiling and sit under D1's ~2MB per-row cap, so no size check.
+    // Legacy row: body still in the D1 content column.
     if (legacyInlineContent) {
       await r2.put(prevKey(slug), legacyInlineContent);
+      return;
     }
-  } catch {
-    // Swallow — see doc comment.
+    // Nothing to back up. Drop whatever an earlier save left behind, or the
+    // revert control would offer a version that isn't the previous one.
+    await r2.delete(prevKey(slug));
+  } catch (err) {
+    // Swallowed so the save still lands — see doc comment. Logged because a
+    // silent backup failure is what let §9 F2 hide: the save answers 200, the
+    // revert control stays lit, and the slot quietly holds an older version.
+    console.error(`prev-version capture failed for ${slug}:`, err);
   }
 }
 
@@ -377,13 +388,18 @@ export async function revertDocument(slug: string): Promise<string | null> {
     const r2 = getR2();
     const prev = await r2.get(prevKey(slug));
     if (!prev) return null;
+    // Buffered because the caller hands this back to the editor anyway.
     const restored = await prev.text();
 
+    // Move the displaced body into the prev slot before overwriting {slug} —
+    // afterwards there would be nothing left to read it from. Streamed so we
+    // never hold two full bodies at once (see capturePrevVersion).
     const current = await r2.get(slug);
-    const displaced = current ? await current.text() : row.content;
+    await r2.put(prevKey(slug), current ? current.body : row.content);
 
+    // If this last write fails the document keeps its current body and only the
+    // older backup is gone — the edit survives, which is the tradeoff we want.
     await r2.put(slug, restored);
-    await r2.put(prevKey(slug), displaced);
     await db
       .prepare("UPDATE documents SET content = '' WHERE slug = ?")
       .bind(slug)
