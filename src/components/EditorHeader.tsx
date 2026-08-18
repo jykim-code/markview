@@ -23,6 +23,12 @@ interface EditorHeaderProps {
   onRevert: () => void;
   revertAvailable: boolean;
   reverting: boolean;
+  /**
+   * Reader text size control. MD only — the HTML view renders documents in a
+   * sandboxed iframe and keeps their original layout, so there is nothing here
+   * to scale (ROADMAP §3).
+   */
+  fontSizeControl?: ReactNode;
 }
 
 /**
@@ -47,6 +53,7 @@ export function EditorHeader({
   onRevert,
   revertAvailable,
   reverting,
+  fontSizeControl,
 }: EditorHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -183,6 +190,8 @@ export function EditorHeader({
         {exportButton}
         {shareButton}
         {myDocsLink}
+        {/* Reading preferences sit together at the end of the row. */}
+        {fontSizeControl}
         <ThemeToggle />
       </div>
 
@@ -218,6 +227,15 @@ export function EditorHeader({
             {exportButton}
             <div onClick={() => setMenuOpen(false)}>{shareButton}</div>
             <div onClick={() => setMenuOpen(false)}>{myDocsLink}</div>
+            {/*
+              The size control deliberately leaves the menu open — stepping is a
+              repeated action, and the document stays visible below the dropdown,
+              so you can see each step land instead of reopening the menu to take
+              the next one.
+            */}
+            {fontSizeControl && (
+              <div className="flex justify-center">{fontSizeControl}</div>
+            )}
             <div className="flex justify-center" onClick={() => setMenuOpen(false)}>
               <ThemeToggle />
             </div>

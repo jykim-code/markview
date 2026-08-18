@@ -31,7 +31,14 @@ gtag('config', 'G-THLNKBRLFH');`,
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('markview-theme');if(t){document.documentElement.setAttribute('data-theme',t)}else if(window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}})()`,
+            /*
+              Applied before paint so a stored theme or reader text size is
+              already on screen when React hydrates. Separate try blocks: one
+              preference failing must not skip the other.
+              Keys match ThemeToggle.tsx and FontSizeControl.tsx.
+            */
+            __html: `(function(){try{var t=localStorage.getItem('markview-theme');if(t){document.documentElement.setAttribute('data-theme',t)}else if(window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}
+try{var s=localStorage.getItem('markview-font-scale');if(s){document.documentElement.style.setProperty('--reader-font-scale',s)}}catch(e){}})()`,
           }}
         />
         <link rel="icon" href="/M.svg" type="image/svg+xml" />

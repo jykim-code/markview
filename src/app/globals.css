@@ -26,6 +26,18 @@ html {
 
 /* Exact srgb values matching design HTML — asymmetric light/dark */
 :root {
+  /*
+   * Reader text scale, stepped by the A− / A+ control (FontSizeControl.tsx).
+   * Set on <html> by the inline script in layout.tsx so a stored size applies
+   * before hydration, the same way the theme does — otherwise the document
+   * would paint at 100% and jump once React takes over.
+   *
+   * Only text inside .prose follows it. Layout spacing stays in rem on purpose:
+   * scaling padding along with the text makes long documents feel airier
+   * rather than more readable, and reflows tables at every step.
+   */
+  --reader-font-scale: 1;
+
   --header-border: #0A122A;
   --label-text: rgba(10, 18, 42, 0.7);
   --label-bg: rgba(10, 18, 42, 0.02);
@@ -129,6 +141,8 @@ body {
   color: var(--tw-prose-body);
   max-width: none;
   line-height: 1.75;
+  /* Sizes below are in em so headings and code follow this one number. */
+  font-size: calc(1rem * var(--reader-font-scale));
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
@@ -138,7 +152,7 @@ body {
 }
 
 .prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.5em;
   margin-top: 2rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
@@ -146,7 +160,7 @@ body {
 }
 
 .prose h3 {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
 }
@@ -236,7 +250,7 @@ body {
 }
 
 .prose code {
-  font-size: 0.875rem;
+  font-size: 0.875em;
   font-family: "Fira Code", "JetBrains Mono", ui-monospace, monospace;
 }
 

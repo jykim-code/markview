@@ -127,7 +127,7 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
         return;
       }
       toast.success("저장했습니다");
-      // The save just produced a backup, unless the body exceeded the size cap.
+      // The save just produced a backup, so the revert control has to appear.
       void refreshRevert();
     } finally {
       setSaving(false);

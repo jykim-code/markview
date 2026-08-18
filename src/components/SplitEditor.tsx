@@ -6,6 +6,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { TableOfContents } from "./TableOfContents";
 import { ExportButton } from "./ExportButton";
 import { EditorHeader } from "./EditorHeader";
+import { FontSizeControl } from "./FontSizeControl";
 import { locateInElement } from "@/lib/editorSync";
 import { useRevert } from "@/lib/useRevert";
 import { saveDocument } from "@/lib/saveDocument";
@@ -110,7 +111,7 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
         return;
       }
       toast.success("저장했습니다");
-      // The save just produced a backup, unless the body exceeded the size cap.
+      // The save just produced a backup, so the revert control has to appear.
       void refreshRevert();
     } finally {
       setSaving(false);
@@ -171,6 +172,7 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
         onRevert={revert}
         revertAvailable={revertAvailable}
         reverting={reverting}
+        fontSizeControl={<FontSizeControl />}
       />
 
       {/* Body */}
