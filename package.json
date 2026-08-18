@@ -7,7 +7,9 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "pages:build": "next build --webpack && npx @opennextjs/cloudflare build --skipBuild && node scripts/prepare-pages.mjs"
+    "pages:build": "next build --webpack && npx @opennextjs/cloudflare build --skipBuild && node scripts/prepare-pages.mjs",
+    "mcp:dev": "cd mcp && npm run dev",
+    "mcp:deploy": "cd mcp && npx wrangler deploy"
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.11",

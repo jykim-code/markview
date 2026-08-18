@@ -24,6 +24,7 @@ function locate(text){var ns=needles(text);for(var k=0;k<ns.length;k++){var nd=n
 addEventListener('scroll',function(){if(lock||tick)return;tick=true;requestAnimationFrame(function(){tick=false;try{parent.postMessage({mv:'scroll',ratio:ratio()},'*');}catch(e){}});},{passive:true});
 addEventListener('message',function(ev){var m=ev.data;if(!m)return;if(m.mv==='scrollTo'){lock=true;var e=se();var max=e.scrollHeight-e.clientHeight;e.scrollTop=max*m.ratio;setTimeout(function(){lock=false;},120);}else if(m.mv==='locate'){locate(m.text);}});
 document.addEventListener('mouseup',function(){var s=window.getSelection&&window.getSelection();var t=s?(''+s).trim():'';if(t.length>1){try{parent.postMessage({mv:'select',text:t},'*');}catch(e){}}});
+document.addEventListener('click',function(ev){var a=ev.target&&ev.target.closest?ev.target.closest('a'):null;if(!a)return;var href=a.getAttribute('href')||'';if(!href)return;var hi=href.indexOf('#');if(hi>=0){try{var id=href.slice(hi+1);var el=id?document.getElementById(id):null;if(el){ev.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}else if(href.charAt(0)==='#'){ev.preventDefault();}}catch(e){}}});
 })();<\/script>`;
 
 /** Append the bridge script to an HTML document string (before </body> if present). */

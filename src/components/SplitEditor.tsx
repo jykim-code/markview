@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { TableOfContents } from "./TableOfContents";
@@ -24,11 +24,12 @@ type ViewMode = "view" | "edit";
 interface SplitEditorProps {
   slug: string;
   title: string;
-  initialContent: string;
+  initialContent?: string;
 }
 
 export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
-  const [content, setContent] = useState(initialContent);
+  const [content, setContent] = useState<string>(initialContent ?? "");
+  const [loading, setLoading] = useState(initialContent === undefined);
   const [mode, setMode] = useState<ViewMode>("view");
   const [syncScroll, setSyncScroll] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -38,6 +39,18 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
   const lockRef = useRef(false);
   const syncScrollRef = useRef(syncScroll);
   syncScrollRef.current = syncScroll;
+
+  useEffect(() => {
+    if (!loading) return;
+    fetch(`/api/documents/${slug}`)
+      .then((r) => r.json())
+      .then((data) => {
+        const d = data as { content?: string };
+        setContent(d.content ?? "");
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [slug, loading]);
 
   const lock = useCallback(() => {
     lockRef.current = true;
@@ -134,6 +147,14 @@ export function SplitEditor({ slug, title, initialContent }: SplitEditorProps) {
     }
     toast.success("마크다운을 복사했습니다");
   }, [content, toast]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-sm text-navy/40">
+        불러오는 중…
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col overflow-x-hidden">

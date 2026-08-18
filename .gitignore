@@ -47,6 +47,8 @@ next-env.d.ts
 .claude/worktrees/
 extension/dist/
 extension/node_modules/
+mcp/node_modules/
+mcp/.omc/
 
 # OMC: keep planning/spec docs, drop ephemeral session state
 .omc/*

@@ -1,0 +1,38 @@
+{
+  "name": "@markview/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Markview — publish Markdown/HTML and get a shareable link",
+  "type": "module",
+  "bin": {
+    "markview-mcp": "./bin/markview-mcp.js"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "stdio": "tsx src/stdio.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.1",
+    "@types/node": "^26.2.0",
+    "tsx": "^4.19.4",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "typescript": "^5",
+    "wrangler": "^4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jykim-code/markview.git",
+    "directory": "mcp"
+  },
+  "keywords": [
+    "mcp",
+    "markview",
+    "markdown",
+    "html",
+    "publish"
+  ]
+}

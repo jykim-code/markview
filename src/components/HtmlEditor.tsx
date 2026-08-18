@@ -24,12 +24,13 @@ type ViewMode = "view" | "edit";
 interface HtmlEditorProps {
   slug: string;
   title: string;
-  initialContent: string;
+  initialContent?: string;
 }
 
 export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
-  const [content, setContent] = useState(initialContent);
-  const [preview, setPreview] = useState(initialContent);
+  const [content, setContent] = useState<string>(initialContent ?? "");
+  const [preview, setPreview] = useState<string>(initialContent ?? "");
+  const [loading, setLoading] = useState(initialContent === undefined);
   const [mode, setMode] = useState<ViewMode>("view");
   const [syncScroll, setSyncScroll] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -41,6 +42,22 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
   syncScrollRef.current = syncScroll;
   const modeRef = useRef(mode);
   modeRef.current = mode;
+
+  // Fetch content client-side — SSR shell intentionally omits it to stay
+  // within Worker CPU limits (avoids serialising large bodies via RSC).
+  useEffect(() => {
+    if (!loading) return;
+    fetch(`/api/documents/${slug}`)
+      .then((r) => r.json())
+      .then((data) => {
+        const d = data as { content?: string };
+        const c = d.content ?? "";
+        setContent(c);
+        setPreview(c);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [slug, loading]);
 
   // Debounce code → live preview so the iframe doesn't reload on every keystroke.
   useEffect(() => {
@@ -134,6 +151,14 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
     toast.success("공유 링크를 복사했습니다");
   }, [slug, toast]);
 
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-sm text-navy/40">
+        불러오는 중…
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen flex-col overflow-x-hidden">
       <EditorHeader
@@ -182,7 +207,7 @@ export function HtmlEditor({ slug, title, initialContent }: HtmlEditorProps) {
           <HtmlRenderer
             html={preview}
             title={title}
-            bridge={mode === "edit"}
+            bridge={true}
             iframeRef={iframeRef}
             className="min-h-0 w-full flex-1 border-0 bg-white"
           />

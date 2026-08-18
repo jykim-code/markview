@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "markview": {
+      "type": "http",
+      "url": "https://markview-mcp.hancomtech.workers.dev"
+    }
+  }
+}

@@ -1,7 +1,27 @@
-import { updateDocument, verifyOwnerToken, deleteDocument } from "@/lib/db";
+import { getDocumentBySlug, updateDocument, verifyOwnerToken, deleteDocument } from "@/lib/db";
 
 /** Header carrying the per-document ownership proof issued at upload time. */
 const OWNER_TOKEN_HEADER = "X-Owner-Token";
+
+/**
+ * Fetch document content. Called by client components so the SSR shell
+ * doesn't have to serialise potentially large bodies into the RSC payload.
+ */
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  try {
+    const { slug } = await params;
+    const doc = await getDocumentBySlug(slug);
+    if (!doc) {
+      return Response.json({ error: "문서를 찾을 수 없습니다" }, { status: 404 });
+    }
+    return Response.json({ content: doc.content });
+  } catch {
+    return Response.json({ error: "불러오기에 실패했습니다" }, { status: 500 });
+  }
+}
 
 /**
  * Save a new body.
