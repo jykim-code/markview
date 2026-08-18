@@ -36,7 +36,7 @@ export default function AboutPage() {
           </div>
           <h2 className="text-lg font-bold text-navy">서비스 소개</h2>
           <p className="mt-3 text-sm leading-relaxed text-navy/70">
-            Markview는 AI가 만든 마크다운(.md) 파일을 업로드하면, 아름답게 렌더링된 웹 문서로 변환하고 URL 하나로 누구에게나 공유할 수 있는 서비스입니다.
+            Markview는 AI가 만든 마크다운(.md)과 HTML 파일을 업로드하면, 읽기 편하게 렌더링된 웹 문서로 변환하고 URL 하나로 누구에게나 공유할 수 있는 서비스입니다.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-navy/70">
             별도의 설치나 로그인 없이, 공유 링크를 받은 사람은 즉시 깔끔하게 렌더링된 문서를 열람할 수 있습니다.
@@ -44,13 +44,17 @@ export default function AboutPage() {
 
           <h2 className="mt-8 text-lg font-bold text-navy">주요 기능</h2>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-relaxed text-navy/70">
-            <li>URL 공유 — 링크 하나로 누구나 열람</li>
-            <li>자동 목차(TOC) 생성</li>
+            <li>URL 공유: 링크 하나로 누구나 열람</li>
+            <li>HTML 문서 렌더링 (자기 완결형 인터랙티브 HTML 지원)</li>
+            <li>내 문서 목록(My Docs)에서 올린 문서 확인과 삭제</li>
+            <li>되돌리기: 편집 전 직전 내용을 한 번에 복원</li>
             <li>실시간 마크다운 편집 (View / Edit 모드)</li>
-            <li>마크다운 원본 복사 버튼</li>
+            <li>자동 목차(TOC) 생성</li>
             <li>Markdown, HTML, PDF 내보내기</li>
             <li>GFM, 코드 구문 강조, LaTeX 수식, Mermaid 다이어그램 지원</li>
+            <li>본문 글자 크기 조절 (90~150%)</li>
             <li>다크 / 라이트 모드 전환</li>
+            <li>파일 크기 최대 25MB</li>
           </ul>
 
           <h2 className="mt-8 text-lg font-bold text-navy">운영자 정보</h2>

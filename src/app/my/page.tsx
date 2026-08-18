@@ -171,7 +171,7 @@ export default function MyDocsPage() {
       <ConfirmDialog
         open={!!pendingDelete}
         title="문서를 삭제할까요?"
-        description={`«${pendingDelete?.title ?? ""}» — 되돌릴 수 없습니다.`}
+        description={`«${pendingDelete?.title ?? ""}» 문서를 삭제하면 되돌릴 수 없습니다.`}
         confirmLabel="삭제"
         destructive
         busy={deleting}

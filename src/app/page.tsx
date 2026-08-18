@@ -37,11 +37,7 @@ export default function Home() {
               letterSpacing: "-1.5px",
             }}
           >
-            마크다운을
-            <br />
-            사람이 읽기 편한
-            <br />
-            형태로.
+            AI가 생성한 파일을 사람이 읽기 편한 형태로.
           </h1>
           <p className="mt-6 text-base font-medium leading-[1.8] text-navy/50">
             AI가 만든 마크다운·HTML 파일을 업로드하면,
@@ -79,6 +75,10 @@ export default function Home() {
             "Live Editor",
             "Export (MD / HTML / PDF)",
             "URL Share",
+            "My Docs",
+            "One-step Revert",
+            "Text Size (A− / A+)",
+            "Dark Mode",
           ].map((tag) => (
             <span
               key={tag}
@@ -89,9 +89,11 @@ export default function Home() {
           ))}
         </div>
         <p className="max-w-[600px] text-[15px] leading-relaxed text-navy/50">
-          AI가 만든 마크다운을 사람이 읽기 편한 형태로 아름답게 렌더링합니다.
+          AI가 만든 마크다운과 HTML을 사람이 읽기 편한 형태로 렌더링합니다.
           <br />
-          코드 블록, 수식, 다이어그램까지 — 실시간 편집, Export, URL 공유까지 한 곳에서.
+          코드 블록, 수식, 다이어그램은 물론 실시간 편집, Export, URL 공유까지 한 곳에서 해결됩니다.
+          <br />
+          내 문서 목록, 되돌리기, 글자 크기 조절로 읽고 관리하기도 편합니다.
         </p>
       </section>
 
