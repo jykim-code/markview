@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useToast } from "@/components/Toast";
 import { readMyDocs, syncMyDocs, removeMyDoc, type MyDoc } from "@/lib/myDocs";
@@ -76,21 +75,7 @@ export default function MyDocsPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-bg">
-      <header
-        className="sticky top-0 z-50 flex h-[66px] items-center justify-between bg-bg px-6 transition-colors duration-300 md:px-8"
-        style={{ borderBottom: "1px solid var(--header-border)" }}
-      >
-        <Link href="/">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-light" />
-          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-dark" />
-        </Link>
-        <nav className="flex items-center gap-4 md:gap-6">
-          <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</Link>
-          <Link href="/my" className="text-xs font-semibold uppercase tracking-wider text-navy">My Docs</Link>
-          <Link href="/about" className="hidden text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy sm:inline">About</Link>
-          <ThemeToggle />
-        </nav>
-      </header>
+      <SiteHeader active="my" />
 
       <section className="mx-auto w-full max-w-[760px] flex-1 px-6 py-10 md:py-14">
         <h1

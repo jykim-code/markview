@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 import Link from "next/link";
 
 export default function ContactPage() {
@@ -27,20 +26,7 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-bg transition-colors duration-300">
-      <header className="sticky top-0 z-10 flex h-[66px] items-center justify-between bg-bg px-4 md:px-8" style={{ borderBottom: '1px solid var(--header-border)' }}>
-        <Link href="/" className="transition-opacity hover:opacity-70">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-light" />
-          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} className="h-7 w-auto logo-dark" />
-        </Link>
-        <nav className="flex items-center gap-4 md:gap-6">
-          <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Home</Link>
-          <Link href="/my" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">My Docs</Link>
-          <Link href="/about" className="hidden text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy sm:inline">About</Link>
-          <Link href="/privacy" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">Privacy</Link>
-          <Link href="/contact" className="text-xs font-semibold uppercase tracking-wider text-navy">Contact</Link>
-          <ThemeToggle />
-        </nav>
-      </header>
+      <SiteHeader active="contact" />
 
       <div className="mx-auto max-w-[720px] px-5 pb-20 pt-10 md:px-6 md:pt-16">
         <h1 className="text-[28px] font-extrabold tracking-tight text-navy md:text-4xl">Contact</h1>

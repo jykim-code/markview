@@ -1,28 +1,11 @@
-import Image from "next/image";
 import { UploadZone } from "@/components/UploadZone";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-bg">
-      {/* Header Bar */}
-      <header className="sticky top-0 z-50 flex h-[66px] items-center justify-between bg-bg px-8 transition-colors duration-300" style={{ borderBottom: '1px solid var(--header-border)' }}>
-        <Link href="/">
-          <Image src="/markview_text_icon.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-light" />
-          <Image src="/markview_text_icon_dark.svg" alt="Markview" width={200} height={56} priority className="h-7 w-auto logo-dark" />
-        </Link>
-        <nav className="flex items-center gap-4 md:gap-6">
-          <Link href="/" className="text-xs font-semibold uppercase tracking-wider text-navy">Home</Link>
-          <Link href="/my" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">My Docs</Link>
-          <Link href="/about" className="text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy">About</Link>
-          {/* Kept out of the narrow-screen header to avoid the horizontal
-              overflow the mobile header fix removed; both are in the footer. */}
-          <Link href="/privacy" className="hidden text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy sm:inline">Privacy</Link>
-          <Link href="/contact" className="hidden text-xs font-semibold uppercase tracking-wider text-navy/50 hover:text-navy sm:inline">Contact</Link>
-          <ThemeToggle />
-        </nav>
-      </header>
+      <SiteHeader active="home" />
 
       {/* Hero Section - cream bg, responsive */}
       <section className="flex min-h-[calc(100vh-66px)] flex-col items-center justify-center gap-8 overflow-hidden bg-cream px-6 py-12 transition-colors duration-300 md:flex-row md:gap-12 md:px-16 md:py-16">
