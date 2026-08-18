@@ -29,12 +29,22 @@ export default function Home() {
         {/* Left: Big text */}
         <div className="max-w-[480px] flex-1 animate-fade-in text-center md:text-left">
           <h1
-            className="font-montserrat text-navy"
+            className="text-navy"
             style={{
               fontSize: "clamp(32px, 6vw, 52px)",
               fontWeight: 800,
               lineHeight: 1.15,
               letterSpacing: "-1.5px",
+              // Korean wraps per-character by default, which can split a word
+              // like 형태로 across lines; keep-all wraps at word boundaries.
+              wordBreak: "keep-all",
+              // Montserrat is deliberately skipped here. It has no Hangul, so
+              // in this Korean headline only the Latin letters ("AI") would
+              // take its wide geometric ExtraBold while the rest falls back to
+              // the system Korean font. Going straight to the system stack
+              // keeps every glyph in one visual family.
+              fontFamily:
+                'system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
             }}
           >
             AI가 생성한 파일을 사람이 읽기 편한 형태로.
